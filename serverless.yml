@@ -1,0 +1,41 @@
+service: omni-live-real-time-updates
+
+provider:
+  name: aws
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+  versionFunctions: false
+  tags: ${self:custom.tags}
+  stackTags: ${self:custom.tags}
+  role: ${ssm:/omni-dw/${self:provider.stage}/lambda/role}
+  vpc:
+    securityGroupIds:
+      - ${ssm:/omni-dw/${self:provider.stage}/lambda/sgId}
+    subnetIds:
+      - ${ssm:/omni-dw/${self:provider.stage}/lambda/subnetA}
+
+custom:
+  region: ${opt:region, 'us-east-1'}
+  stage: ${opt:stage, 'dev'}
+  tags:
+    Application: LiVe Real Time Updates
+    CreateBy: BizCloudExperts
+    Environment: ${self:custom.stage}
+
+layers:
+  LiveUpdates:
+    name: ${self:provider.stage}-LiveUpdates
+    compatibleRuntimes:
+      - python3.11
+    package:
+      artifact: python/layer.zip
+    description: "Dependencies for python functions"
+
+plugins:
+  - serverless-offline
+  - serverless-step-functions
+
+package:
+  individually: true
+
+functions:
