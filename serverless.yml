@@ -39,3 +39,4 @@ package:
   individually: true
 
 functions:
+  ordersRT: ${file(config/functions/realtime/ordersRT.yml):function}
