@@ -14,7 +14,7 @@ function:
   
   events:
     - s3:
-        bucket: 's3://dms-dw-etl-lvlp/dev/dbo/'
+        bucket: arn:aws:s3:::dms-dw-etl-lvlp/dev/dbo/
         event: s3:ObjectCreated:*
         rules:
           - prefix: orders/
