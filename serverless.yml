@@ -23,22 +23,6 @@ custom:
     Environment: ${self:custom.stage}
 
 layers:
-  PandasLayer:
-    name: ${self:provider.stage}-PandasLayer
-    compatibleRuntimes:
-      - python3.11
-    package:
-      artifact: python/pandas.zip
-    description: "Pandas Layer"
-  
-  Boto3Layer:
-    name: ${self:provider.stage}-Boto3Layer
-    compatibleRuntimes:
-      - python3.11
-    package:
-      artifact: python/boto3.zip
-    description: "Boto3 Layer"
-
   PyarrowLayer:
     name: ${self:provider.stage}-PyarrowLayer
     compatibleRuntimes:

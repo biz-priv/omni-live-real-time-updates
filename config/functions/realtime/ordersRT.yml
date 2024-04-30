@@ -4,8 +4,6 @@ function:
   description: LiVe Orders Table - ${self:provider.stage}
   runtime: python3.11
   layers:
-    - {Ref: PandasLayerLambdaLayer}
-    - {Ref: Boto3LayerLambdaLayer}
     - {Ref: PyarrowLayerLambdaLayer}
   timeout: 600
   package:
