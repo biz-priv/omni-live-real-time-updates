@@ -23,13 +23,29 @@ custom:
     Environment: ${self:custom.stage}
 
 layers:
-  LiveUpdates:
-    name: ${self:provider.stage}-LiveUpdates
+  PandasLayer:
+    name: ${self:provider.stage}-PandasLayer
     compatibleRuntimes:
       - python3.11
     package:
-      artifact: python/layer.zip
-    description: "Dependencies for python functions"
+      artifact: python/pandas.zip
+    description: "Pandas Layer"
+  
+  Boto3Layer:
+    name: ${self:provider.stage}-Boto3Layer
+    compatibleRuntimes:
+      - python3.11
+    package:
+      artifact: python/boto3.zip
+    description: "Boto3 Layer"
+
+  PyarrowLayer:
+    name: ${self:provider.stage}-PyarrowLayer
+    compatibleRuntimes:
+      - python3.11
+    package:
+      artifact: python/pyarrow.zip
+    description: "Pyarrow Layer"
 
 plugins:
   - serverless-offline
