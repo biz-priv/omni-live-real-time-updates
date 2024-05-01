@@ -10,7 +10,6 @@ function:
     patterns:
       - '!**/*'
       - 'src/realtime/ordersRT.py'
-      - 'src/shared/**'
   
   events:
     - s3:
