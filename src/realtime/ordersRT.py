@@ -1,5 +1,6 @@
 import boto3
-import pandas as pd
+import pandas
+
 
 def getFileFromS3(bucketName, s3key):
     try: 
@@ -8,7 +9,7 @@ def getFileFromS3(bucketName, s3key):
         # filename = parts[-1] 
         s3Client = boto3.client('s3')
         s3Obj = s3Client.get_object(Bucket=bucketName, Key=s3key)
-        df_orders = pd.read_parquet(s3Obj, engine='pyarrow')
+        df_orders = pandas.read_parquet(s3Obj, engine='pyarrow')
         return df_orders
 
     except Exception as e:
