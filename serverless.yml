@@ -1,31 +1,3 @@
-# service: omni-live-real-time-orders
-
-# provider:
-#   name: aws
-#   stage: dev  # or {opt:stage, 'dev'} for defaulting to dev if not specified
-#   ecr:
-#     images:
-#       realtimeOrders:
-#         uri: 332281781429.dkr.ecr.us-east-1.amazonaws.com/omni-live-real-time-updates-dev:latest
-
-# functions:
-#   realtimeOrdersFunction:
-#     image:
-#       uri: ${self:provider.ecr.images.realtimeOrders.uri}  
-#     timeout: 600
-#     # events:
-#     #   - s3:
-#     #       bucket: dms-dw-etl-lvlp
-#     #       event: s3:ObjectCreated:Put
-#     #       rules:
-#     #         - prefix: dev/dbo/orders/
-#     #       existing: true
-#     description: "LiVe Orders Table - ${self:provider.stage}"
-
-
-
-
-
 service: omni-live-real-time-updates
 
 provider:
