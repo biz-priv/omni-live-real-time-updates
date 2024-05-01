@@ -1,5 +1,2 @@
-python/boto3/*
-python/pandas/*
-python/pyarrow/*
 python/layers/*
 dockerfile
