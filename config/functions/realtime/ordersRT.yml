@@ -4,7 +4,7 @@ function:
   description: LiVe Orders Table - ${self:provider.stage}
   runtime: python3.11
   layers:
-    - {Ref: PythonLayerLambdaLayer}
+    - arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python311:12
   timeout: 600
   package:
     patterns:
