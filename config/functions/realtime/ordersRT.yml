@@ -18,3 +18,7 @@ function:
         rules:
           - prefix: dev/dbo/orders/
         existing: true
+  environment:
+    LIVE_ORDERS_DB: 'omni-live-orders-dev'
+    S3_BUCKET: 'dms-dw-etl-lvlp'
+    REGION: ${self:provider.region}

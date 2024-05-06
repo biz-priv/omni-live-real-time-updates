@@ -33,7 +33,7 @@ def _convert_value(val):
         
 def write_df_to_dynamodb(df, table_name):
     try:
-        table = boto3.resource('dynamodb', region_name='us-east-1').Table(table_name)
+        table = boto3.resource('dynamodb', region_name=os.environ['REGION']).Table(table_name)
         items = df.apply(lambda x: json.loads(x.to_json()), axis=1)
         for item in items:
             dynamo_item = {k: _convert_value(v) for k, v in item.items()}

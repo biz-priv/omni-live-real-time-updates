@@ -16,7 +16,7 @@ def handler(event, context):
         print(event)
         records = event.get('Records')[0]
         s3Key = records['s3']['object']['key']
-        bucket = 'dms-dw-etl-lvlp'
+        bucket = os.environ['S3_BUCKET']
         df = getFileFromS3(bucket, s3Key)
 
         df_sorted = df.sort_values(by=['id', 'transact_id'], ascending = [True, False])
@@ -26,7 +26,7 @@ def handler(event, context):
         print(df_sorted[['id', 'transact_id']])
         print(df_unique[['id', 'transact_id']])
         
-        write_df_to_dynamodb(df_unique, 'omni-live-orders-dev')
+        write_df_to_dynamodb(df_unique, os.environ['LIVE_ORDERS_DB'])
         print("Completed")
 
     except Exception as e:
