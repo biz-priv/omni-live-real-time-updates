@@ -2,6 +2,7 @@ import boto3
 import pandas as pd
 import json
 import io
+import os
 
 
 def getFileFromS3(bucketName, s3key):
