@@ -32,31 +32,38 @@ def _convert_value(val):
         return val
         
 def write_df_to_dynamodb(df, table_name):
-    table = boto3.resource('dynamodb', region_name='us-east-1').Table(table_name)
-    items = df.apply(lambda x: json.loads(x.to_json()), axis=1)
-    for item in items:
-        dynamo_item = {k: _convert_value(v) for k, v in item.items()}
-        try:
+    try:
+        table = boto3.resource('dynamodb', region_name='us-east-1').Table(table_name)
+        items = df.apply(lambda x: json.loads(x.to_json()), axis=1)
+        for item in items:
+            dynamo_item = {k: _convert_value(v) for k, v in item.items()}
             response = table.put_item(Item=dynamo_item)
             print("Successfully inserted item:", dynamo_item)
-        except Exception as e:
-            print("Error inserting item:", dynamo_item, "Error:", e)
+    except Exception as e:
+        print("write_df_to_dynamodb(): Error inserting item:", e)
+        raise Exception("Error inserting item: ") from e
 
         
 def handler(event, context):
-    print(event)
-    records = event.get('Records')[0]
-    s3Key = records['s3']['object']['key']
-    bucket = 'dms-dw-etl-lvlp'
-    df = getFileFromS3(bucket, s3Key)
+    try:
+        print(event)
+        records = event.get('Records')[0]
+        s3Key = records['s3']['object']['key']
+        bucket = 'dms-dw-etl-lvlp'
+        df = getFileFromS3(bucket, s3Key)
 
-    df_sorted = df.sort_values(by=['id', 'transact_id'], ascending = [True, False])
+        df_sorted = df.sort_values(by=['id', 'transact_id'], ascending = [True, False])
 
-    df_unique = df_sorted.drop_duplicates(subset='id', keep='first')
-    
-    print(df_sorted[['id', 'transact_id']])
-    print(df_unique[['id', 'transact_id']])
-    
-    write_df_to_dynamodb(df_unique, 'omni-live-orders-dev')
-    print("Completed")
+        df_unique = df_sorted.drop_duplicates(subset='id', keep='first')
+        
+        print(df_sorted[['id', 'transact_id']])
+        print(df_unique[['id', 'transact_id']])
+        
+        write_df_to_dynamodb(df_unique, 'omni-live-orders-dev')
+        print("Completed")
+
+    except Exception as e:
+        print("Error processing live orders:", e)
+        raise Exception("Error processing live orders: ") from e
+        
     
