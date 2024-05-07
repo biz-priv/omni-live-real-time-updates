@@ -43,3 +43,4 @@ functions:
   ordersRT: ${file(config/functions/realtime/ordersRT.yml):function}
   movementRT: ${file(config/functions/realtime/movementRT.yml):function}
   stopRT: ${file(config/functions/realtime/stopRT.yml):function}
+  movementOrderRT: ${file(config/functions/realtime/movementOrderRT.yml):function}

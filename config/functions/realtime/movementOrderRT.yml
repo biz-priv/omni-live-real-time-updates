@@ -1,0 +1,24 @@
+function:
+  handler: src/realtime/movementOrderRT.handler 
+  name: omni-live-real-time-movement-order-${self:provider.stage}
+  description: LiVe Movement Order Table - ${self:provider.stage}
+  runtime: python3.11
+  layers:
+    - arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python311:12
+  timeout: 600
+  package:
+    patterns:
+      - '!**/*'
+      - 'src/realtime/movementOrderRT.py'
+      - 'src/shared/**'
+  events:
+    - s3:
+        bucket: dms-dw-etl-lvlp
+        event: s3:ObjectCreated:*
+        rules:
+          - prefix: dev/dbo/movement_order/
+        existing: true
+  environment:
+    LIVE_MOVEMENT_ORDER_DB: 'omni-pb-rt-movement-order'
+    S3_BUCKET: 'dms-dw-etl-lvlp'
+    REGION: ${self:provider.region}
