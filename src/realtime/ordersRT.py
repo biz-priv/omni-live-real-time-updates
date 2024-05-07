@@ -14,19 +14,17 @@ from utils import getFileFromS3, write_df_to_dynamodb
 def handler(event, context):
     try:
         print(event)
-        records = event.get('Records')[0]
-        s3Key = records['s3']['object']['key']
-        bucket = os.environ['S3_BUCKET']
-        df = getFileFromS3(bucket, s3Key)
+        records = event.get('Records')
+        for record in records:
+            s3Key = record['s3']['object']['key']
+            bucket = os.environ['S3_BUCKET']
+            df = getFileFromS3(bucket, s3Key)
+            df_sorted = df.sort_values(by=['id', 'transact_id'], ascending = [True, False])
+            df_unique = df_sorted.drop_duplicates(subset='id', keep='first')
+            print(df_sorted[['id', 'transact_id']])
+            print(df_unique[['id', 'transact_id']])
+            write_df_to_dynamodb(df_unique, os.environ['LIVE_ORDERS_DB'])
 
-        df_sorted = df.sort_values(by=['id', 'transact_id'], ascending = [True, False])
-
-        df_unique = df_sorted.drop_duplicates(subset='id', keep='first')
-        
-        print(df_sorted[['id', 'transact_id']])
-        print(df_unique[['id', 'transact_id']])
-        
-        write_df_to_dynamodb(df_unique, os.environ['LIVE_ORDERS_DB'])
         print("Completed")
 
     except Exception as e:
