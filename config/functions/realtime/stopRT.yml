@@ -1,0 +1,24 @@
+function:
+  handler: src/realtime/stopRT.handler 
+  name: omni-live-real-time-stop-${self:provider.stage}
+  description: LiVe Stop Table - ${self:provider.stage}
+  runtime: python3.11
+  layers:
+    - arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python311:12
+  timeout: 600
+  package:
+    patterns:
+      - '!**/*'
+      - 'src/realtime/stopRT.py'
+      - 'src/shared/**'
+  events:
+    - s3:
+        bucket: dms-dw-etl-lvlp
+        event: s3:ObjectCreated:*
+        rules:
+          - prefix: dev/dbo/stop/
+        existing: true
+  environment:
+    LIVE_ORDERS_DB: 'omni-pb-rt-stop-dev'
+    S3_BUCKET: 'dms-dw-etl-lvlp'
+    REGION: ${self:provider.region}
