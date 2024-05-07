@@ -19,6 +19,6 @@ function:
           - prefix: dev/dbo/stop/
         existing: true
   environment:
-    LIVE_ORDERS_DB: 'omni-pb-rt-stop-dev'
+    LIVE_STOPS_DB: 'omni-pb-rt-stop-dev'
     S3_BUCKET: 'dms-dw-etl-lvlp'
     REGION: ${self:provider.region}
