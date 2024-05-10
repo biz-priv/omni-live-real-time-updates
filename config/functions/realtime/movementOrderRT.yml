@@ -19,6 +19,6 @@ function:
           - prefix: dev/dbo/movement_order/
         existing: true
   environment:
-    LIVE_MOVEMENT_ORDER_DB: 'omni-pb-rt-movement-order'
+    LIVE_MOVEMENT_ORDER_DB: 'omni-pb-rt-movement-order-dev'
     S3_BUCKET: 'dms-dw-etl-lvlp'
     REGION: ${self:provider.region}
