@@ -44,7 +44,7 @@ def write_df_to_dynamodb(df, table_name):
         print("write_df_to_dynamodb(): Error inserting item:", e)
         raise Exception("Error inserting item: ") from e
     
-def write_sns_to_dynamo(event, topic_arn, table_name, msg_att_name=None):
+def write_sns_to_dynamodb(event, topic_arn, table_name, msg_att_name=None):
     sns_client = boto3.client('sns')
     try:
         records = event['Records']
@@ -67,21 +67,12 @@ def write_sns_to_dynamo(event, topic_arn, table_name, msg_att_name=None):
                             }
                         print("messageAttributes", message_attributes)
                         sns_publish(sns_client, element, topic_arn, table_name, message_attributes)
-                # if element['eventName'] == 'REMOVE' and 'omni-live-rt-replication-movement-Order-rt-ddb-to-sns' in topic_arn:
-                #     print("Dynamo REMOVE event")
-                #     sns_publish(sns_client, element, topic_arn, table_name, message_attributes)
-                #     continue
-                # if element['eventName'] == 'REMOVE':
-                #     print("Dynamo REMOVE event")
-                #     continue
-                # sns_publish(sns_client, element, topic_arn, table_name, message_attributes)
             except Exception as error:
                 print("error:forloop", error)
         return "Success"
     except Exception as error:
         print("error", error)
         return "process failed"
-    
 
 def sns_publish(sns_client, element, topic_arn, table_name, message_attributes):
     try:
