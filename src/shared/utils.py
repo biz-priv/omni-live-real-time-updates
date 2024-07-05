@@ -57,33 +57,42 @@ def write_sns_to_dynamodb(event, topic_arn, table_name, msg_att_name=None):
 
         if records is None:
             raise ValueError("Event does not contain 'Records' key or it is None")
-
-        message_attributes = None
+        
         for element in records:
+            print("Processing element:", element)
             try:
                 if msg_att_name:
                     new_image = element.get('dynamodb', {}).get('NewImage', {})
                     print("New Image:", new_image)
-                    if new_image and msg_att_name in new_image:
-                        msg_att_value = new_image[msg_att_name]['S'] if 'S' in new_image[msg_att_name] else None
-                        print("msgAttValue", msg_att_value)
-                        if msg_att_value == "" or msg_att_value is None:
-                            message_attributes = None
-                        else:
+                    
+                    if not new_image:
+                        print("No NewImage found in the record")
+                        continue
+                    
+                    if msg_att_name in new_image:
+                        msg_att_value = new_image[msg_att_name].get('S')
+                        print("msgAttValue:", msg_att_value)
+                        
+                        if msg_att_value:
                             message_attributes = {
                                 msg_att_name: {
                                     'DataType': 'String',
                                     'StringValue': str(msg_att_value),
                                 },
                             }
-                        print("messageAttributes", message_attributes)
-                        sns_publish(sns_client, element, topic_arn, table_name, message_attributes)
+                            print("messageAttributes:", message_attributes)
+                            sns_publish(sns_client, element, topic_arn, table_name, message_attributes)
+                        else:
+                            print("msg_att_value is empty or None")
+                    else:
+                        print(f"{msg_att_name} not found in NewImage")
             except Exception as error:
-                print("error:forloop", error)
+                print("Error processing element:", error)
         return "Success"
     except Exception as error:
-        print("error", error)
-        return "process failed"
+        print("Error in write_sns_to_dynamodb:", error)
+        return "Process failed"
+
 
 
 def sns_publish(sns_client, element, topic_arn, table_name, message_attributes):
@@ -91,15 +100,17 @@ def sns_publish(sns_client, element, topic_arn, table_name, message_attributes):
         print("SNS Publish")
         dynamo_item = element.get('dynamodb', {}).get('NewImage', {})
         if dynamo_item:
-            dynamo_item = json.loads(dynamo_item.to_json())
+            dynamo_item = json.loads(json.dumps(dynamo_item, default=str))
             dynamo_item['tableName'] = table_name
+            print("Dynamo Item to Publish:", dynamo_item)
             sns_client.publish(
                 TopicArn=topic_arn,
                 Message=json.dumps(dynamo_item),
                 MessageAttributes=message_attributes
             )
+            print("SNS Publish successful")
         else:
             print("No DynamoDB item found.")
     except Exception as e:
-        print("Error in sns_publish: ", e)
+        print("Error in sns_publish:", e)
         raise Exception("Error publishing to SNS: ") from e

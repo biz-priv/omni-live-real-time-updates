@@ -15,7 +15,8 @@ def handler(event, context):
     try:
         # Log the incoming event
         print("Event received:", event)
-        write_sns_to_dynamodb(event, os.environ['SNS_TOPIC_ARN'], os.environ['DYNAMO_DB_TABLE'])
+        # Pass a default value for msg_att_name for testing
+        write_sns_to_dynamodb(event, os.environ['SNS_TOPIC_ARN'], os.environ['DYNAMO_DB_TABLE'], msg_att_name='id')
     except Exception as e:
         print("Error processing live stops table:", e)
         raise Exception("Error processing live stops table: ") from e
