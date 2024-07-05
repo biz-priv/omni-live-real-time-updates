@@ -1,0 +1,16 @@
+---
+function:
+  name: omni-movement-RT-ddb-to-sns-${self:provider.stage}
+  handler: src/dynamoStreamToSns/movementRTstreamstosns.handler
+  runtime: python3.11
+  layers:
+    - { Ref: PythonLayerLambdaLayer }
+  package:
+    patterns:
+      - "!**/*"
+      - "src/dynamoStreamToSns/movementRTstreamstosns.py"
+      - "src/shared/**"
+  events:
+    - stream:
+  environment:
+    SNS_TOPIC_ARN: 

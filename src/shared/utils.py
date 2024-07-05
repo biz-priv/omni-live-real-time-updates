@@ -43,3 +43,60 @@ def write_df_to_dynamodb(df, table_name):
     except Exception as e:
         print("write_df_to_dynamodb(): Error inserting item:", e)
         raise Exception("Error inserting item: ") from e
+    
+def write_sns_to_dynamo(event, topic_arn, table_name, msg_att_name=None):
+    sns_client = boto3.client('sns')
+    try:
+        records = event['Records']
+        message_attributes = None
+        for element in records:
+            try:
+                if msg_att_name:
+                    new_image = element.get('dynamodb', {}).get('NewImage', {})
+                    if new_image and msg_att_name in new_image:
+                        msg_att_value = new_image[msg_att_name]['S'] if 'S' in new_image[msg_att_name] else None
+                        print("msgAttValue", msg_att_value)
+                        if msg_att_value == "" or msg_att_value is None:
+                            message_attributes = None
+                        else:
+                            message_attributes = {
+                                msg_att_name: {
+                                    'DataType': 'String',
+                                    'StringValue': str(msg_att_value),
+                                },
+                            }
+                        print("messageAttributes", message_attributes)
+                        sns_publish(sns_client, element, topic_arn, table_name, message_attributes)
+                # if element['eventName'] == 'REMOVE' and 'omni-live-rt-replication-movement-Order-rt-ddb-to-sns' in topic_arn:
+                #     print("Dynamo REMOVE event")
+                #     sns_publish(sns_client, element, topic_arn, table_name, message_attributes)
+                #     continue
+                # if element['eventName'] == 'REMOVE':
+                #     print("Dynamo REMOVE event")
+                #     continue
+                # sns_publish(sns_client, element, topic_arn, table_name, message_attributes)
+            except Exception as error:
+                print("error:forloop", error)
+        return "Success"
+    except Exception as error:
+        print("error", error)
+        return "process failed"
+    
+
+def sns_publish(sns_client, element, topic_arn, table_name, message_attributes):
+    try:
+        print("SNS Publish")
+        dynamo_item = element.get('dynamodb', {}).get('NewImage', {})
+        if dynamo_item:
+            dynamo_item = json.loads(dynamo_item.to_json())
+            dynamo_item['tableName'] = table_name
+            sns_client.publish(
+                TopicArn=topic_arn,
+                Message=json.dumps(dynamo_item),
+                MessageAttributes=message_attributes
+            )
+        else:
+            print("No DynamoDB item found.")
+    except Exception as e:
+        print("Error in sns_publish: ", e)
+        raise Exception("Error publishing to SNS: ") from e

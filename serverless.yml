@@ -13,6 +13,25 @@ provider:
       - ${ssm:/omni-dw/${self:provider.stage}/lambda/sgId}
     subnetIds:
       - ${ssm:/omni-dw/${self:provider.stage}/lambda/subnetA}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:GetRecords"
+        - "dynamodb:GetShardIterator"
+        - "dynamodb:DescribeStream"
+        - "dynamodb:ListStreams"
+        - "dynamodb:DescribeTable"
+        - "dynamodb:Query"
+        - "dynamodb:GetItem"
+        - "dynamodb:PutItem"
+        - "dynamodb:UpdateItem"
+        - "dynamodb:DeleteItem"
+      Resource:
+        - "*"   
+    - Effect: "Allow"
+      Action:
+        - "SNS:Publish"
+      Resource: "*"           
 
 
 custom:
@@ -44,3 +63,11 @@ functions:
   movementRT: ${file(config/functions/realtime/movementRT.yml):function}
   stopRT: ${file(config/functions/realtime/stopRT.yml):function}
   movementOrderRT: ${file(config/functions/realtime/movementOrderRT.yml):function}
+
+
+  #dynamoStreamToSns
+  movementOrderRTstreamstosns: ${file(config/functions/realtime/dynamotosns/movementOrderRTstreamstosns.yml):function}
+  # movementRTstreamstosns: ${file(config/functions/realtime/dynamotosns/movementRTstreamstosns.yml):function}
+  # ordersRTstreamstosns: ${file(config/functions/realtime/dynamotosns/ordersRTstreamstosns.yml):function}
+  # stopRTstreamstosns: ${file(config/functions/realtime/dynamotosns/stopRTstreamstosns.yml):function}
+
