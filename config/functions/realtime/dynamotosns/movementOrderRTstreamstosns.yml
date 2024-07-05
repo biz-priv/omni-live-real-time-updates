@@ -13,6 +13,6 @@ function:
   events:
     - stream: "arn:aws:dynamodb:us-east-1:332281781429:table/omni-pb-rt-movement-order-dev/stream/2024-05-09T20:02:58.582"
   environment:
-    SNS_TOPIC_ARN : ${ssm:/omni-live-rt-replication/${self:provider.stage}/movement-order-rt-ddb-to-sns/arn~true} 
+    SNS_TOPIC_ARN : "arn:aws:sns:us-east-1:332281781429:omni-live-rt-replication-movement-Order-rt-ddb-to-sns-dev"
     # DYNAMO_DB_TABLE: 
 
