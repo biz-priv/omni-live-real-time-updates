@@ -13,6 +13,8 @@ from utils import write_sns_to_dynamodb
 
 def handler(event, context):
     try:
+        # Log the incoming event
+        print("Event received:", event)
         write_sns_to_dynamodb(event, os.environ['SNS_TOPIC_ARN'], os.environ['DYNAMO_DB_TABLE'])
     except Exception as e:
         print("Error processing live stops table:", e)

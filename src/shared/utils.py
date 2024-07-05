@@ -44,15 +44,26 @@ def write_df_to_dynamodb(df, table_name):
         print("write_df_to_dynamodb(): Error inserting item:", e)
         raise Exception("Error inserting item: ") from e
     
+
+
+# In utils.py
+
 def write_sns_to_dynamodb(event, topic_arn, table_name, msg_att_name=None):
     sns_client = boto3.client('sns')
     try:
-        records = event['Records']
+        # Log the records from the event
+        records = event.get('Records', None)
+        print("Records:", records)
+
+        if records is None:
+            raise ValueError("Event does not contain 'Records' key or it is None")
+
         message_attributes = None
         for element in records:
             try:
                 if msg_att_name:
                     new_image = element.get('dynamodb', {}).get('NewImage', {})
+                    print("New Image:", new_image)
                     if new_image and msg_att_name in new_image:
                         msg_att_value = new_image[msg_att_name]['S'] if 'S' in new_image[msg_att_name] else None
                         print("msgAttValue", msg_att_value)
@@ -73,6 +84,7 @@ def write_sns_to_dynamodb(event, topic_arn, table_name, msg_att_name=None):
     except Exception as error:
         print("error", error)
         return "process failed"
+
 
 def sns_publish(sns_client, element, topic_arn, table_name, message_attributes):
     try:
