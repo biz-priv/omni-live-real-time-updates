@@ -1,3 +1,9 @@
 pandas
 pyarrow
 boto3
+datetime
+pytz
+uuid
+json
+os
+botocore

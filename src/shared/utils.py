@@ -3,6 +3,10 @@ import pandas as pd
 import json
 import io
 import os
+import datetime
+import pytz
+import uuid
+dynamodb = boto3.resource('dynamodb')
 
 
 def getFileFromS3(bucketName, s3key):
@@ -32,7 +36,7 @@ def _convert_value(val):
     else:
         return val
         
-def write_df_to_dynamodb(df, table_name):
+async def write_df_to_dynamodb(df, table_name):
     try:
         table = boto3.resource('dynamodb', region_name=os.environ['REGION']).Table(table_name)
         items = df.apply(lambda x: json.loads(x.to_json()), axis=1)
@@ -41,9 +45,27 @@ def write_df_to_dynamodb(df, table_name):
             response = table.put_item(Item=dynamo_item)
             print("Successfully inserted item:", dynamo_item)
     except Exception as e:
-        print("write_df_to_dynamodb(): Error inserting item:", e)
+        print("write_df_t(o_dynamodb(): Error inserting item:", e)
+        await failed_list(item,table_name,e)
         raise Exception("Error inserting item: ") from e
     
+   
+
+def failed_list(item,table_name,e):
+    try:
+        table = dynamodb.Table(os.environ['FAILED_RECORDS'])
+        item = {
+            'UUid': uuid.uuid4(),
+            'Sourcetable': table_name,
+            'FailedRecord': item,
+            'Status': "INSERTED",
+            'ErrorMessage': e,
+            'Timestamp': datetime.now(pytz.utc)
+        }
+        table.put_item(Item=item)
+        print("Failed record has been reprocessed:", item)
+    except Exception as e:
+        print("Error adding failed record to DynamoDB:", str(e))
 
 
 # In utils.py
