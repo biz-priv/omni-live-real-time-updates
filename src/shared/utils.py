@@ -36,7 +36,7 @@ def _convert_value(val):
     else:
         return val
         
-async def write_df_to_dynamodb(df, table_name):
+def write_df_to_dynamodb(df, table_name):
     try:
         table = boto3.resource('dynamodb', region_name=os.environ['REGION']).Table(table_name)
         items = df.apply(lambda x: json.loads(x.to_json()), axis=1)
@@ -44,9 +44,10 @@ async def write_df_to_dynamodb(df, table_name):
             dynamo_item = {k: _convert_value(v) for k, v in item.items()}
             response = table.put_item(Item=dynamo_item)
             print("Successfully inserted item:", dynamo_item)
+            failed_list(item,table_name,e)
     except Exception as e:
         print("write_df_t(o_dynamodb(): Error inserting item:", e)
-        await failed_list(item,table_name,e)
+        failed_list(item,table_name,e)
         raise Exception("Error inserting item: ") from e
     
    
