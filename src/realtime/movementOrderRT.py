@@ -24,7 +24,6 @@ def handler(event, context):
             print(df_sorted[['id', 'transact_id']])
             print(df_unique[['id', 'transact_id']])
             write_df_to_dynamodb(df_unique, os.environ['LIVE_MOVEMENT_ORDER_DB'])
-
         print("Completed")
 
     except Exception as e:
