@@ -67,7 +67,7 @@ functions:
   movementRT: ${file(config/functions/realtime/movementRT.yml):function}
   stopRT: ${file(config/functions/realtime/stopRT.yml):function}
   movementOrderRT: ${file(config/functions/realtime/movementOrderRT.yml):function}
-  # reprocess: ${file(config/functions/realtime/reprocess.yml):function}
+  reprocess: ${file(config/functions/realtime/reprocess.yml):function}
 
 
   #dynamoStreamToSns

@@ -2,9 +2,11 @@ function:
   handler: src/realtime/reprocess.handler 
   name: omni-live-real-time-reprocess-${self:provider.stage}
   description: LiVe reprocess - ${self:provider.stage}
+  tags:
+    Name : omni-live-real-time-reprocess
   runtime: python3.11
   layers:
-    - arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python311:12
+    - { Ref: PythonLayerLambdaLayer }
   timeout: 600
   package:
     patterns:
