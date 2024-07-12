@@ -4,15 +4,16 @@ function:
   handler: src/dynamoStreamToSns/movementRTstreamstosns.handler
   runtime: python3.11
   layers:
-    - { Ref: PythonLayerLambdaLayer }
+    - arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python311:12
   package:
     patterns:
       - "!**/*"
       - "src/dynamoStreamToSns/movementRTstreamstosns.py"
       - "src/shared/**"
   events:
-    - stream: ${ssm:/omni-pb-rt/${self:provider.stage}/movement/ddb.streamArn~true}
+    - stream: ${ssm:/omni-pb-rt/${self:provider.stage}/movement/ddb.streamArn}
  
   environment:
     SNS_TOPIC_ARN: ${ssm:/omni-live-rt-replication/${self:provider.stage}/movement-rt-ddb-to-sns/arn}
-    DYNAMO_DB_TABLE: ${ssm:/omni-pb-rt/${self:provider.stage}/movement/ddb.tableName~true}
+    DYNAMO_DB_TABLE: ${ssm:/omni-pb-rt/${self:provider.stage}/movement/db.tableName}
+    

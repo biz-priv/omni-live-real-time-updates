@@ -4,15 +4,15 @@ function:
   handler: src/dynamoStreamToSns/ordersRTstreamstosns.handler
   runtime: python3.11
   layers:
-    - { Ref: PythonLayerLambdaLayer }
+    - arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python311:12
   package:
     patterns:
       - "!**/*"
       - "src/dynamoStreamToSns/ordersRTstreamstosns.py"
       - "src/shared/**"
-  events:
-    - stream: "arn:aws:dynamodb:us-east-1:332281781429:table/omni-pb-rt-orders-dev/stream/2024-05-09T20:02:58.582"
-  environment:
-    SNS_TOPIC_ARN: ${ssm:/omni-live-rt-replication/${self:provider.stage}/orders-rt-ddb-to-sns/arn}
-    DYNAMO_DB_TABLE: ${ssm:/omni-pb-rt/${self:provider.stage}/orders/ddb.tableName~true}
+  # events:
+  #   - stream: "arn:aws:dynamodb:us-east-1:332281781429:table/omni-pb-rt-orders-dev/stream/2024-05-09T20:02:58.582"
+  # environment:
+  #   SNS_TOPIC_ARN: ${ssm:/omni-live-rt-replication/${self:provider.stage}/orders-rt-ddb-to-sns/arn}
+  #   DYNAMO_DB_TABLE: ${ssm:/omni-pb-rt/${self:provider.stage}/orders/db.tableName~true}
 
