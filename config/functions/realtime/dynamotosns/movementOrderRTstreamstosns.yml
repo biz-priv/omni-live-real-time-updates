@@ -2,18 +2,20 @@
 function:
   name: omni-movement-Order-rt-ddb-to-sns-${self:provider.stage}
   handler: src/dynamoStreamToSns/movementOrderRTstreamstosns.handler
+  tags:
+    Name : omni-movement-Order-rt-ddb-to-sns
   runtime: python3.11
   layers:
-    - arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python311:12
+    - { Ref: PythonLayerLambdaLayer }
   package:
     patterns:
       - "!**/*"
       - "src/dynamoStreamToSns/movementOrderRTstreamstosns.py"
       - "src/shared/**"
   events:
-    - stream: "arn:aws:dynamodb:us-east-1:332281781429:table/omni-pb-rt-movement-order-dev/stream/2024-05-09T20:02:58.582"
+    - stream: ${ssm:/omni-pb-rt/${self:provider.stage}/movement-order/ddb.streamArn}
   environment:
-    SNS_TOPIC_ARN : "arn:aws:sns:us-east-1:332281781429:omni-live-rt-replication-movement-Order-rt-ddb-to-sns-dev"
-    DYNAMO_DB_TABLE: "omni-pb-rt-movement-order-dev"
+    SNS_TOPIC_ARN: ${ssm:/omni-live-rt-replication/${self:provider.stage}/movement-order-rt-ddb-to-sns/arn}
+    DYNAMO_DB_TABLE: ${ssm:/omni-pb-rt/${self:provider.stage}/movement-order/db}
 
 

@@ -3,16 +3,18 @@ function:
   name: omni-stop-RT-ddb-to-sns-${self:provider.stage}
   handler: src/dynamoStreamToSns/stopRTstreamstosns.handler
   runtime: python3.11
+  tags:
+    Name : omni-stop-RT-ddb-to-sns
   layers:
-    - arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python311:12
+    - { Ref: PythonLayerLambdaLayer }
   package:
     patterns:
       - "!**/*"
       - "src/dynamoStreamToSns/stopRTstreamstosns.py"
       - "src/shared/**"
-  # events:
-  #   - stream: arn:aws:dynamodb:us-east-1:332281781429:table/omni-pb-rt-stop-dev/stream/2024-05-09T20:02:58.575
-  # environment:
-  #   SNS_TOPIC_ARN: ${ssm:/omni-live-rt-replication/${self:provider.stage}/stop-rt-ddb-to-sns/arn~true}
-  #   DYNAMO_DB_TABLE: ${ssm:/omni-pb-rt/${self:provider.stage}/stop/db~true}
+  events:
+    - stream: ${ssm:/omni-pb-rt/${self:provider.stage}/stop/ddb.streamArn}
+  environment:
+    SNS_TOPIC_ARN: ${ssm:/omni-live-rt-replication/${self:provider.stage}/stop-rt-ddb-to-sns/arn}
+    DYNAMO_DB_TABLE: ${ssm:/omni-pb-rt/${self:provider.stage}/stop/db}
 
