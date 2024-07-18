@@ -44,7 +44,6 @@ def write_df_to_dynamodb(df, table_name):
             dynamo_item = {k: _convert_value(v) for k, v in item.items()}
             response = table.put_item(Item=dynamo_item)
             print("Successfully inserted item:", dynamo_item)
-            failed_list(item,table_name)
     except Exception as e:
         print("write_df_t(o_dynamodb(): Error inserting item:", e)
         failed_list(item,table_name)
