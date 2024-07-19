@@ -5,7 +5,7 @@ import boto3
 from boto3.dynamodb.types import TypeDeserializer
 from botocore.exceptions import ClientError
 from uuid import uuid4
-import pytz
+# import pytz
 
 dynamodb = boto3.resource('dynamodb')
 ddb_client = boto3.client('dynamodb')
@@ -103,7 +103,7 @@ def update_failed_records_table(unique_id, failed_record, source_table, status, 
             'FailedRecord': failed_record,
             'Status': status,
             'ErrorMessage': error_message,
-            'Timestamp': datetime.datetime.now(pytz.utc)
+            # 'Timestamp': datetime.datetime.now(pytz.utc)
         }
         table.put_item(Item=item)
         print("Failed record has been reprocessed:", unique_id)
