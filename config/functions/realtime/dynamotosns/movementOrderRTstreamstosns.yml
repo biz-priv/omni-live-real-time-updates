@@ -1,19 +1,21 @@
 ---
 function:
-  name: omni-movement-Order-rt-ddb-to-sns-${self:provider.stage}
-  handler: src/dynamoStreamToSns/movementOrderRTstreamstosns.handler
+  name: omni-movement-order-rt-ddb-to-sns-${self:provider.stage}
+  handler: src/dynamoStreamToSns/movementorderrtstreamstosns.handler
   tags:
-    Name : omni-movement-Order-rt-ddb-to-sns
+    Name : omni-movement-order-rt-ddb-to-sns
   runtime: python3.11
   layers:
     - { Ref: PythonLayerLambdaLayer }
   package:
     patterns:
       - "!**/*"
-      - "src/dynamoStreamToSns/movementOrderRTstreamstosns.py"
+      - "src/dynamoStreamToSns/movementorderrtstreamstosns.py"
       - "src/shared/**"
   events:
-    - stream: ${ssm:/omni-pb-rt/${self:provider.stage}/movement-order/ddb.streamArn}
+    - stream:
+        type: dynamodb  
+        arn : ${ssm:/omni-pb-rt/${self:provider.stage}/movement-order/ddb.streamArn}
   environment:
     SNS_TOPIC_ARN: ${ssm:/omni-live-rt-replication/${self:provider.stage}/movement-order-rt-ddb-to-sns/arn}
     DYNAMO_DB_TABLE: ${ssm:/omni-pb-rt/${self:provider.stage}/movement-order/db}

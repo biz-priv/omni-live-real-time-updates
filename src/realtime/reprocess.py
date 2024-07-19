@@ -103,12 +103,9 @@ def update_failed_records_table(unique_id, failed_record, source_table, status, 
             'FailedRecord': failed_record,
             'Status': status,
             'ErrorMessage': error_message,
-            'Timestamp': datetime.now(pytz.utc)
+            'Timestamp': datetime.datetime.now(pytz.utc)
         }
         table.put_item(Item=item)
         print("Failed record has been reprocessed:", unique_id)
     except ClientError as e:
         print("Error adding failed record to DynamoDB:", str(e))
-
-
-

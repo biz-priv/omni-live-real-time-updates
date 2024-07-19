@@ -1,10 +1,10 @@
 ---
 function:
-  name: omni-movement-RT-ddb-to-sns-${self:provider.stage}
+  name: omni-movement-rt-ddb-to-sns-${self:provider.stage}
   handler: src/dynamoStreamToSns/movementRTstreamstosns.handler
   runtime: python3.11
   tags: 
-    Name : omni-movement-RT-ddb-to-sns
+    Name : omni-movement-rt-ddb-to-sns
   layers:
     - { Ref: PythonLayerLambdaLayer }
   package:
@@ -13,7 +13,9 @@ function:
       - "src/dynamoStreamToSns/movementRTstreamstosns.py"
       - "src/shared/**"
   events:
-    - stream: ${ssm:/omni-pb-rt/${self:provider.stage}/movement/ddb.streamArn}
+    - stream:
+        type: dynamodb  
+        arn : ${ssm:/omni-pb-rt/${self:provider.stage}/movement/ddb.streamArn}
  
   environment:
     SNS_TOPIC_ARN: ${ssm:/omni-live-rt-replication/${self:provider.stage}/movement-rt-ddb-to-sns/arn}
