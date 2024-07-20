@@ -68,6 +68,7 @@ functions:
   stopRT: ${file(config/functions/realtime/stopRT.yml):function}
   movementOrderRT: ${file(config/functions/realtime/movementOrderRT.yml):function}
   reprocess: ${file(config/functions/realtime/reprocess.yml):function}
+  sendemail: ${file(config/functions/realtime/sendemail.yml):function}
 
 
   #dynamoStreamToSns

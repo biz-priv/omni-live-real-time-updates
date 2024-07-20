@@ -1,0 +1,20 @@
+---
+function:
+  name: omni-live-real-time-sendreport-${self:provider.stage}
+  handler: src/realtime/sendemail.handler
+  description: LiVe Send Report - ${self:provider.stage}
+  runtime: python3.11
+  layers:
+    - { Ref: PythonLayerLambdaLayer }
+  timeout: 600
+  package:
+    patterns:
+      - '!**/*'
+      - 'src/realtime/sendemail.py'
+      - 'src/shared/**'
+
+  events:
+    - schedule: cron(0 */2 * * ? *)
+
+
+
