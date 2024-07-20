@@ -1,103 +1,134 @@
 import boto3
-from botocore.exceptions import ClientError
-from datetime import datetime
 import csv
-import io
 import os
+from io import StringIO
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
 
-# Initialize AWS services
-dynamodb = boto3.resource('dynamodb')
+# Initialize clients
+dynamodb = boto3.client('dynamodb')
 ses = boto3.client('ses')
 
-EMAIL_TO = "omnidev@bizcloudexperts.com"
-EMAIL_FROM = "no-reply@omnilogistics.com"
+# Environment variables
+TABLE_NAME = os.environ['FAILED_RECORDS']
+SENDER_EMAIL = "omnidev@bizcloudexperts.com"
+RECIPIENT_EMAIL = "no-reply@omnilogistics.com"
 
 def handler(event, context):
-    start_date = datetime.now().strftime("%Y-%m-%d")
-    file_name = f"failed_records_{start_date}.csv"
+    # Scan DynamoDB table for records with status 'SUCCESS'
+    response = dynamodb.scan(
+        TableName=TABLE_NAME,
+        FilterExpression='#status = :status',
+        ExpressionAttributeNames={'#status': 'Status'},
+        ExpressionAttributeValues={':status': {'S': 'SUCCESS'}}
+    )
 
-    try:
-        failed_records = fetch_all_failed_records()
-        failed_records_count = len(failed_records)
+    records = response['Items']
+    print(records)
+    
+    if not records:
+        return {"message": "No records found with status 'SUCCESS'"}
 
-        print(f"Fetched failed records: {failed_records_count}")  # Add this line for debugging
+    # Create CSV
+    csv_content = generate_csv(records)
 
-        if failed_records:
-            csv_data = generate_csv(failed_records)
+    # Send email with CSV attachment
+    send_email(csv_content)
 
-            email_params = {
-                'Source': EMAIL_FROM,
-                'Destination': {
-                    'ToAddresses': [EMAIL_TO]
-                },
-                'Message': {
-                    'Subject': {
-                        'Data': f"Failed Records Report for Realtime application {start_date}"
-                    },
-                    'Body': {
-                        'Text': {
-                            'Data': f"The failed records report for {start_date} has been successfully generated. The file is also attached. There are total {failed_records_count} records."
-                        }
-                    }
-                },
-                'Attachments': [
-                    {
-                        'Filename': file_name,
-                        'Content': csv_data,
-                        'ContentType': 'text/csv'
-                    }
-                ]
-            }
-
-            ses.send_raw_email(**email_params)
-            print("Email sent successfully.")
-            return "success"
-        else:
-            print("No failed records found.")
-            return "no failed records"
-    except Exception as err:
-        print(f"Error querying DynamoDB, generating CSV, or sending email: {err}")
-        raise
-
-def fetch_all_failed_records():
-    table = dynamodb.Table(os.environ['FAILED_RECORDS'])
-    all_records = []
-    last_evaluated_key = None
-
-    try:
-        while True:
-            params = {
-                'IndexName': 'Status-index',  # Replace with the actual name of your GSI
-                'KeyConditionExpression': '#Status = :FAILED',
-                'ExpressionAttributeNames': {
-                    '#Status': 'Status'
-                },
-                'ExpressionAttributeValues': {
-                    ':FAILED': 'FAILED'
-                },
-                'Limit': 10000  # Adjust the batch size as per your needs
-            }
-
-            if last_evaluated_key:
-                params['ExclusiveStartKey'] = last_evaluated_key
-
-            response = table.query(**params)
-            all_records.extend(response.get('Items', []))
-            
-            last_evaluated_key = response.get('LastEvaluatedKey')
-            if not last_evaluated_key:
-                break
-
-    except ClientError as e:
-        print(f"Query failed: {e}")
-        raise
-
-    return all_records
+    return {"message": "Email sent successfully"}
 
 def generate_csv(records):
-    output = io.StringIO()
-    writer = csv.DictWriter(output, fieldnames=records[0].keys())
-    writer.writeheader()
+    # Create a CSV string
+    csv_file = StringIO()
+    csv_writer = csv.writer(csv_file)
+
+    # Write headers
+    headers = records[0].keys()
+    csv_writer.writerow(headers)
+
+    # Write data
     for record in records:
-        writer.writerow(record)
-    return output.getvalue()
+        row = []
+        for header in headers:
+            value = record[header]
+            if 'S' in value:
+                row.append(value['S'])
+            elif 'N' in value:
+                row.append(value['N'])
+            elif 'B' in value:
+                row.append(value['B'])
+            else:
+                row.append(str(value))  # Handle other data types or nested structures
+        csv_writer.writerow(row)
+
+    return csv_file.getvalue()
+
+def send_email(csv_content):
+    # Create raw email
+    msg = MIMEMultipart()
+    msg['Subject'] = "Failed Records Report"
+    msg['From'] = SENDER_EMAIL
+    msg['To'] = RECIPIENT_EMAIL
+
+    # Email body
+    body = MIMEText("Please find the attached CSV file containing records with status 'SUCCESS'.")
+    msg.attach(body)
+
+    # CSV attachment
+    attachment = MIMEApplication(csv_content)
+    attachment.add_header('Content-Disposition', 'attachment', filename='failed_records.csv')
+    msg.attach(attachment)
+
+    # Send email
+    response = ses.send_raw_email(
+        Source=SENDER_EMAIL,
+        Destinations=[RECIPIENT_EMAIL],
+        RawMessage={'Data': msg.as_string()}
+    )
+    
+    return response
+
+
+
+
+
+
+
+
+## USED TO CHANGE STATUS OF RECORDS
+# import os
+# import boto3
+# from boto3.dynamodb.conditions import Key
+
+# # Assume environment variable is set for the table name
+# table_name = os.getenv('FAILED_RECORDS')
+
+# # Initialize a session using Amazon DynamoDB
+# dynamodb = boto3.resource('dynamodb')
+
+# # Select the DynamoDB table
+# table = dynamodb.Table(table_name)
+
+# # Define a lambda function for filtering items with Status 'INSERTED'
+# get_inserted_items = lambda: table.query(
+#     IndexName='Status-index',  # Use the appropriate index name if using a GSI
+#     KeyConditionExpression=Key('Status').eq('FAILED')
+# )['Items']
+
+# # Function to update the status of the items to 'FAILED'
+# def update_inserted_to_failed():
+#     inserted_items = get_inserted_items()
+#     with table.batch_writer() as batch:
+#         for item in inserted_items:
+#             item['Status'] = 'INSERTED'
+#             batch.put_item(Item=item)
+
+# # Lambda handler function
+# def handler(event, context):
+#     update_inserted_to_failed()
+#     return {
+#         'statusCode': 200,
+#         'body': 'Updated items with status INSERTED to FAILED'
+#     }
+
