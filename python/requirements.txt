@@ -7,3 +7,7 @@ uuid
 json
 os
 botocore
+email
+email.mime.multipart
+email.mime.text
+email.mime.application
