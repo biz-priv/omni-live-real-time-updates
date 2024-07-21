@@ -1,0 +1,26 @@
+function:
+  handler: src/realtime/ordersrt.handler 
+  name: omni-live-real-time-orders-${self:provider.stage}
+  description: LiVe Orders Table - ${self:provider.stage}
+  runtime: python3.11
+  tags:
+    Name: omni-live-real-time-orders
+  layers:
+    - { Ref: PythonLayerLambdaLayer }
+  timeout: 600
+  package:
+    patterns:
+      - '!**/*'
+      - 'src/realtime/ordersrt.py'
+      - 'src/shared/**'
+  events:
+    - s3:
+        bucket: dms-dw-etl-lvlp
+        event: s3:ObjectCreated:*
+        rules:
+          - prefix: dev/dbo/orders/
+        existing: true
+  environment:
+    LIVE_ORDERS_DB: ${ssm:/omni-pb-rt/${self:provider.stage}/orders/db}
+    S3_BUCKET: 'dms-dw-etl-lvlp'
+    REGION: ${self:provider.region}

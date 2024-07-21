@@ -1,0 +1,25 @@
+function:
+  handler: src/realtime/reprocess.handler 
+  name: omni-live-real-time-reprocess-${self:provider.stage}
+  description: LiVe reprocess - ${self:provider.stage}
+  tags:
+    Name : omni-live-real-time-reprocess
+  runtime: python3.11
+  layers:
+    - { Ref: PythonLayerLambdaLayer }
+  timeout: 600
+  package:
+    patterns:
+      - '!**/*'
+      - 'src/realtime/reprocess.py'
+      - 'src/shared/**'
+  events:
+    - stream:
+        type: dynamodb
+        arn: ${ssm:/omni-live-realtime/${self:provider.stage}/failed-records/ddb.streamArn}
+        batchSize: 10
+        startingPosition: LATEST
+        filterPatterns:
+          - { dynamodb: { NewImage: { Status: { S: ['INSERTED'] } } } }
+
+

@@ -1,0 +1,22 @@
+---
+function:
+  name: omni-orders-rt-ddb-to-sns-${self:provider.stage}
+  handler: src/dynamoStreamToSns/ordersrtstreamstosns.handler
+  runtime: python3.11
+  tags:
+    Name : omni-orders-rt-ddb-to-sns
+  layers:
+    - { Ref: PythonLayerLambdaLayer }
+  package:
+    patterns:
+      - "!**/*"
+      - "src/dynamoStreamToSns/ordersrtstreamstosns.py"
+      - "src/shared/**"
+  events:
+    - stream:
+        type: dynamodb  
+        arn : ${ssm:/omni-pb-rt/${self:provider.stage}/orders/ddb.streamArn}
+  environment:
+    SNS_TOPIC_ARN: ${ssm:/omni-live-rt-replication/${self:provider.stage}/orders-rt-ddb-to-sns/arn}
+    DYNAMO_DB_TABLE: ${ssm:/omni-pb-rt/${self:provider.stage}/orders/db}
+
