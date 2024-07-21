@@ -12,8 +12,8 @@ ses = boto3.client('ses')
 
 # Environment variables
 TABLE_NAME = os.environ['FAILED_RECORDS']
-SENDER_EMAIL = "omnidev@bizcloudexperts.com"
-RECIPIENT_EMAIL = "no-reply@omnilogistics.com"
+SENDER_EMAIL = os.environ['TO_EMAIL']
+RECIPIENT_EMAIL = os.environ['FROM_EMAIL']
 
 def handler(event, context):
     # Scan DynamoDB table for records with status 'SUCCESS'
@@ -21,14 +21,14 @@ def handler(event, context):
         TableName=TABLE_NAME,
         FilterExpression='#status = :status',
         ExpressionAttributeNames={'#status': 'Status'},
-        ExpressionAttributeValues={':status': {'S': 'SUCCESS'}}
+        ExpressionAttributeValues={':status': {'S': 'FAILED'}}
     )
 
     records = response['Items']
     print(records)
     
     if not records:
-        return {"message": "No records found with status 'SUCCESS'"}
+        return {"message": "No records found with status 'FAILED'"}
 
     # Create CSV
     csv_content = generate_csv(records)

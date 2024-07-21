@@ -12,6 +12,9 @@ function:
       - '!**/*'
       - 'src/realtime/sendemail.py'
       - 'src/shared/**'
+  environment:
+    TO_EMAIL: ${ssm:/omni-realtime/${self:provider.stage}/omni-dev/email}
+    FROM_EMAIL: ${ssm:/omni-realtime/${self:provider.stage}/omni-no-reply/email}      
 
   events:
     - schedule: cron(0 */2 * * ? *)
