@@ -58,6 +58,7 @@ layers:
 plugins:
   - serverless-offline
   - serverless-step-functions
+  - serverless-python-requirements  
 
 package:
   individually: true
