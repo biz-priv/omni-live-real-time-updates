@@ -52,7 +52,7 @@ layers:
     compatibleRuntimes:
       - python3.11
     package:
-      artifact: python/myLayers.zip
+      artifact: python/myLayer.zip
     description: "Python Layer"
 
 
