@@ -46,14 +46,24 @@ custom:
     CreateBy: BizCloudExperts
     Environment: ${self:custom.stage}
 
+# layers:
+#   PythonLayer:
+#     name: ${self:provider.stage}-PythonLayer
+#     compatibleRuntimes:
+#       - python3.11
+#     package:
+#       artifact: python/layers.zip
+#     description: "Python Layer"
+
+
 layers:
   PythonLayer:
     name: ${self:provider.stage}-PythonLayer
     compatibleRuntimes:
       - python3.11
     package:
-      artifact: python/layers.zip
-    description: "Python Layer"
+      artifact: lambdaLayer/lib/python3.11/python.zip 
+    description: "Dependencies for python functions"
 
 plugins:
   - serverless-offline
