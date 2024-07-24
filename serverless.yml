@@ -4,7 +4,7 @@ provider:
   name: aws
   region: ${opt:region, 'us-east-1'}
   stage: ${opt:stage, 'dev'}
-  runtime: python3.11
+  runtime: python3.10
   versionFunctions: false
   tags: ${self:custom.tags}
   stackTags: ${self:custom.tags}
@@ -52,7 +52,7 @@ layers:
     name: ${self:service}-${self:provider.stage}-python-packages
     path: layer
     compatibleRuntimes:
-      - python3.11
+      - python3.10
 
 
 plugins:

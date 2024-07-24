@@ -4,7 +4,7 @@ function:
   handler: src/dynamoStreamToSns/movementorderrtstreamstosns.handler
   tags:
     Name : omni-movement-order-rt-ddb-to-sns-${self:provider.stage}
-  runtime: python3.11
+  runtime: python3.10
   layers:
     - { Ref: PythonPackagesLambdaLayer }
   package:

@@ -2,7 +2,7 @@ function:
   handler: src/realtime/movementOrderRT.handler 
   name: omni-live-real-time-movement-order-${self:provider.stage}
   description: LiVe Movement Order Table - ${self:provider.stage}
-  runtime: python3.11
+  runtime: python3.10
   tags:
     Name: omni-live-real-time-movement-order-${self:provider.stage}
   layers:

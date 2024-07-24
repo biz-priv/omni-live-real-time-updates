@@ -2,7 +2,7 @@
 function:
   name: omni-movement-rt-ddb-to-sns-${self:provider.stage}
   handler: src/dynamoStreamToSns/movementRTstreamstosns.handler
-  runtime: python3.11
+  runtime: python3.10
   tags: 
     Name : omni-movement-rt-ddb-to-sns-${self:provider.stage}
   layers:

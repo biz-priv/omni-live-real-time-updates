@@ -2,7 +2,7 @@ function:
   handler: src/realtime/stopRT.handler 
   name: omni-live-real-time-stop-${self:provider.stage}
   description: LiVe Stop Table - ${self:provider.stage}
-  runtime: python3.11
+  runtime: python3.10
   tags:
     Name: omni-live-real-time-stop-${self:provider.stage}
   layers:

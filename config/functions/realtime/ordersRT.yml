@@ -2,7 +2,7 @@ function:
   handler: src/realtime/ordersrt.handler 
   name: omni-live-real-time-orders-${self:provider.stage}
   description: LiVe Orders Table - ${self:provider.stage}
-  runtime: python3.11
+  runtime: python3.10
   tags:
     Name: omni-live-real-time-orders-${self:provider.stage}
   layers:

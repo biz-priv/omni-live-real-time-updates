@@ -4,7 +4,7 @@ function:
   description: LiVe reprocess - ${self:provider.stage}
   tags:
     Name : omni-live-real-time-reprocess-${self:provider.stage}
-  runtime: python3.11
+  runtime: python3.10
   layers:
     - { Ref: PythonPackagesLambdaLayer }
   timeout: 600

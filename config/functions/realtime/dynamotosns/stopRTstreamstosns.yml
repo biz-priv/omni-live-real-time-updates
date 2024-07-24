@@ -2,7 +2,7 @@
 function:
   name: omni-stop-rt-ddb-to-sns-${self:provider.stage}
   handler: src/dynamoStreamToSns/stoprtstreamstosns.handler
-  runtime: python3.11
+  runtime: python3.10
   tags:
     Name : omni-stop-rt-ddb-to-sns-${self:provider.stage}
   layers:

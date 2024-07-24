@@ -2,7 +2,7 @@
 function:
   name: omni-orders-rt-ddb-to-sns-${self:provider.stage}
   handler: src/dynamoStreamToSns/ordersrtstreamstosns.handler
-  runtime: python3.11
+  runtime: python3.10
   tags:
     Name : omni-orders-rt-ddb-to-sns-${self:provider.stage}
   layers:

@@ -1,5 +1,5 @@
 pandas
-pyarrow==14.0.0
+pyarrow
 boto3
 pytz
 uuid
