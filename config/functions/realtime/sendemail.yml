@@ -3,7 +3,7 @@ function:
   name: omni-live-real-time-sendreport-${self:provider.stage}
   handler: src/realtime/sendemail.handler
   description: LiVe Send Report - ${self:provider.stage}
-  runtime: python3.10
+  runtime: python3.8
   tags:
     Name: omni-live-real-time-sendreport-${self:provider.stage}
   layers:
