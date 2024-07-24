@@ -10,8 +10,8 @@ provider:
   stackTags: ${self:custom.tags}
   role: ${ssm:/omni-dw/${self:provider.stage}/lambda/role}
   deploymentBucket:
-    name: ${ssm:/omni-dw/${self:provider.stage}/sls/deployment/bucket}
-    serverSideEncryption: AES256
+      name: ${ssm:/omni-dw/${self:provider.stage}/sls/deployment/bucket}
+      serverSideEncryption: AES256
   vpc:
     securityGroupIds:
       - ${ssm:/omni-dw/${self:provider.stage}/lambda/sgId}
@@ -59,6 +59,8 @@ custom:
           - ordersRTstreamstosns
           - stopRTstreamstosns
       dependenciesPath: ./requirements.txt
+      compatibleRuntimes: 
+        - python3.8
 
   # pythonRequirements:
   #   layer:
