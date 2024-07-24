@@ -42,20 +42,27 @@ provider:
 custom:
   region: ${opt:region, 'us-east-1'}
   stage: ${opt:stage, 'dev'}
+  pythonRequirements:
+    layer:
+      name: ${self:service}-${self:provider.stage}-layerName
+      description: Python requirements lambda layer
+      compatibleRuntimes:
+        - python3.10
+
   tags:
     Application: LiVe Real Time Updates
     CreateBy: BizCloudExperts
     Environment: ${self:custom.stage}
 
-layers:
-  PythonPackages:
-    name: ${self:service}-${self:provider.stage}-python-packages
-    path: layer
-    compatibleRuntimes:
-      - python3.10
+# layers:
+#   PythonPackages:
+#     name: ${self:service}-${self:provider.stage}-python-packages
+#     path: layer
+#     compatibleRuntimes:
+#       - python3.10
 
-# plugins:
-#   - serverless-python-requirements  
+plugins:
+  - serverless-python-requirements
 
 package:
   individually: true

@@ -6,7 +6,7 @@ function:
   tags:
     Name: omni-live-real-time-movement-${self:provider.stage}
   layers:
-    - { Ref: PythonPackagesLambdaLayer }
+    - { Ref: PythonRequirementsLambdaLayer }
   timeout: 600
   package:
     patterns:

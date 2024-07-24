@@ -35,14 +35,13 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
-            steps {
-                sh """
-                pip install -r layer/python/requirements.txt -t layer/python
-                """
-            }
-        }
-
+        // stage('Install Dependencies') {
+        //     steps {
+        //         sh """
+        //         pip install -r layer/python/requirements.txt -t layer/python
+        //         """
+        //     }
+        // }
 
         stage('Deploy'){
             when {

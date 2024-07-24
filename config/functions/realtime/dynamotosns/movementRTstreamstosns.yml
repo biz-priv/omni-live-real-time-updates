@@ -6,7 +6,7 @@ function:
   tags: 
     Name : omni-movement-rt-ddb-to-sns-${self:provider.stage}
   layers:
-    - { Ref: PythonPackagesLambdaLayer }
+    - { Ref: PythonRequirementsLambdaLayer }
   package:
     patterns:
       - "!**/*"
