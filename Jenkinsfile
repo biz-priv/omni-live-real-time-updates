@@ -37,7 +37,10 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'pip install -r layer/python/requirements.txt -t layer/python'
+                sh """
+                pip install cmake
+                pip install -r layer/python/requirements.txt -t layer/python
+                """
             }
         }
 
