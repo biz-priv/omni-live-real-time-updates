@@ -11,7 +11,7 @@ function:
   package:
     patterns:
       - '!**/*'
-      - 'src/realtime/movementorderrt.py'
+      - 'src/realtime/movementOrderRT.py'
       - 'src/shared/**'
   events:
     - s3:

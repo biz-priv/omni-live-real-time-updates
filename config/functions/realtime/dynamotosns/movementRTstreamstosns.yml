@@ -1,7 +1,7 @@
 ---
 function:
   name: omni-movement-rt-ddb-to-sns-${self:provider.stage}
-  handler: src/dynamoStreamToSns/movementRTstreamstosns.handler
+  handler: src/dynamoStreamToSns/movement-rt-streams-to-sns.handler
   runtime: python3.10
   tags: 
     Name : omni-movement-rt-ddb-to-sns-${self:provider.stage}
@@ -10,7 +10,7 @@ function:
   package:
     patterns:
       - "!**/*"
-      - "src/dynamoStreamToSns/movementRTstreamstosns.py"
+      - "src/dynamoStreamToSns/movement-rt-streams-to-sns.py"
       - "src/shared/**"
   events:
     - stream:

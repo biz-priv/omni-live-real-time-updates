@@ -1,7 +1,7 @@
 ---
 function:
   name: omni-stop-rt-ddb-to-sns-${self:provider.stage}
-  handler: src/dynamoStreamToSns/stoprtstreamstosns.handler
+  handler: src/dynamoStreamToSns/stop-rt-streams-to-sns.handler
   runtime: python3.10
   tags:
     Name : omni-stop-rt-ddb-to-sns-${self:provider.stage}
@@ -10,7 +10,7 @@ function:
   package:
     patterns:
       - "!**/*"
-      - "src/dynamoStreamToSns/stoprtstreamstosns.py"
+      - "src/dynamoStreamToSns/stop-rt-streams-to-sns.py"
       - "src/shared/**"
   events:
     - stream:

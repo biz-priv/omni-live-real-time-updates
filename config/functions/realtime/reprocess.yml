@@ -4,7 +4,7 @@ function:
   description: LiVe reprocess - ${self:provider.stage}
   tags:
     Name : omni-live-real-time-reprocess-${self:provider.stage}
-  runtime: python3.10
+  runtime: python3.11
   layers:
     - { Ref: PythonPackagesLambdaLayer }
   timeout: 600
@@ -17,9 +17,10 @@ function:
     - stream:
         type: dynamodb
         arn: ${ssm:/omni-live-realtime/${self:provider.stage}/failed-records/ddb.streamArn}
-        batchSize: 10
-        startingPosition: LATEST
+        batchSize: 1
+        enabled: true
         filterPatterns:
           - { dynamodb: { NewImage: { Status: { S: ['INSERTED'] } } } }
+        maximumRetryAttempts: 1
 
 
