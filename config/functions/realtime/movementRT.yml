@@ -2,7 +2,6 @@ function:
   handler: src/realtime/movement-rt.handler 
   name: omni-live-real-time-movement-${self:provider.stage}
   description: LiVe Movement Table - ${self:provider.stage}
-  runtime: python3.8
   tags:
     Name: omni-live-real-time-movement-${self:provider.stage}
   # layers:

@@ -4,7 +4,7 @@ provider:
   name: aws
   region: ${opt:region, 'us-east-1'}
   stage: ${opt:stage, 'dev'}
-  runtime: python3.8
+  runtime: python3.11
   versionFunctions: false
   tags: ${self:custom.tags}
   stackTags: ${self:custom.tags}
@@ -59,8 +59,6 @@ custom:
           - ordersRTstreamstosns
           - stopRTstreamstosns
       dependenciesPath: ./requirements.txt
-      compatibleRuntimes: 
-        - python3.8
 
   # pythonRequirements:
   #   layer:
