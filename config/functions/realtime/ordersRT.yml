@@ -1,5 +1,5 @@
 function:
-  handler: src/realtime/ordersRT.handler 
+  handler: src/realtime/orders-rt.handler 
   name: omni-live-real-time-orders-${self:provider.stage}
   description: LiVe Orders Table - ${self:provider.stage}
   runtime: python3.10
@@ -11,7 +11,7 @@ function:
   package:
     patterns:
       - '!**/*'
-      - 'src/realtime/ordersRT.py'
+      - 'src/realtime/orders-rt.py'
       - 'src/shared/**'
   events:
     - s3:

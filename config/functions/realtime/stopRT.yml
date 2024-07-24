@@ -1,5 +1,5 @@
 function:
-  handler: src/realtime/stopRT.handler 
+  handler: src/realtime/stop-rt.handler 
   name: omni-live-real-time-stop-${self:provider.stage}
   description: LiVe Stop Table - ${self:provider.stage}
   runtime: python3.10
@@ -11,7 +11,7 @@ function:
   package:
     patterns:
       - '!**/*'
-      - 'src/realtime/stopRT.py'
+      - 'src/realtime/stop-rt.py'
       - 'src/shared/**'
   events:
     - s3:

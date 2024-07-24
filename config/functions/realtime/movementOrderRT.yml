@@ -1,5 +1,5 @@
 function:
-  handler: src/realtime/movementOrderRT.handler 
+  handler: src/realtime/movement-order-rt.handler 
   name: omni-live-real-time-movement-order-${self:provider.stage}
   description: LiVe Movement Order Table - ${self:provider.stage}
   runtime: python3.10
@@ -11,7 +11,7 @@ function:
   package:
     patterns:
       - '!**/*'
-      - 'src/realtime/movementOrderRT.py'
+      - 'src/realtime/movement-order-rt.py'
       - 'src/shared/**'
   events:
     - s3:
