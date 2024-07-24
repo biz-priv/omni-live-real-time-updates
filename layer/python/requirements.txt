@@ -1,5 +1,4 @@
 pandas
-pyarrow
 boto3
 pytz
 uuid

@@ -54,7 +54,6 @@ layers:
     compatibleRuntimes:
       - python3.10
 
-
 plugins:
   - serverless-python-requirements  
 
