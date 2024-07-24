@@ -5,8 +5,8 @@ function:
   tags:
     Name : omni-movement-order-rt-ddb-to-sns-${self:provider.stage}
   runtime: python3.8
-  layers:
-    - { Ref: PythonRequirementsLambdaLayer }
+  # layers:
+  #   - { Ref: PythonRequirementsLambdaLayer }
   package:
     patterns:
       - "!**/*"

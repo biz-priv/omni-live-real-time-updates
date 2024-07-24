@@ -5,8 +5,8 @@ function:
   runtime: python3.8
   tags:
     Name: omni-live-real-time-movement-order-${self:provider.stage}
-  layers:
-    - { Ref: PythonRequirementsLambdaLayer }
+  # layers:
+  #   - { Ref: PythonRequirementsLambdaLayer }
   timeout: 600
   package:
     patterns:
