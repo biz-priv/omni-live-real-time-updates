@@ -4,9 +4,9 @@ function:
   handler: src/dynamoStreamToSns/movementRTstreamstosns.handler
   runtime: python3.11
   tags: 
-    Name : omni-movement-rt-ddb-to-sns
+    Name : omni-movement-rt-ddb-to-sns-${self:provider.stage}
   layers:
-    - { Ref: PythonLayerLambdaLayer }
+    - { Ref: PythonPackagesLambdaLayer }
   package:
     patterns:
       - "!**/*"

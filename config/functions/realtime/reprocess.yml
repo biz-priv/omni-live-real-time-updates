@@ -3,10 +3,10 @@ function:
   name: omni-live-real-time-reprocess-${self:provider.stage}
   description: LiVe reprocess - ${self:provider.stage}
   tags:
-    Name : omni-live-real-time-reprocess
+    Name : omni-live-real-time-reprocess-${self:provider.stage}
   runtime: python3.11
   layers:
-    - { Ref: PythonLayerLambdaLayer }
+    - { Ref: PythonPackagesLambdaLayer }
   timeout: 600
   package:
     patterns:

@@ -4,9 +4,9 @@ function:
   handler: src/dynamoStreamToSns/stoprtstreamstosns.handler
   runtime: python3.11
   tags:
-    Name : omni-stop-rt-ddb-to-sns
+    Name : omni-stop-rt-ddb-to-sns-${self:provider.stage}
   layers:
-    - { Ref: PythonLayerLambdaLayer }
+    - { Ref: PythonPackagesLambdaLayer }
   package:
     patterns:
       - "!**/*"

@@ -51,6 +51,7 @@ pipeline {
             steps {
                 withAWS(credentials: 'omni-aws-creds'){
                     sh """
+                    pip install -r layer/python/requirements.txt -t layer/python
                     serverless --version
                     sls deploy -s ${env.ENVIRONMENT}
                     """

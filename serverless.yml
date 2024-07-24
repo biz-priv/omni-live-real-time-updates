@@ -4,6 +4,7 @@ provider:
   name: aws
   region: ${opt:region, 'us-east-1'}
   stage: ${opt:stage, 'dev'}
+  runtime: python3.11
   versionFunctions: false
   tags: ${self:custom.tags}
   stackTags: ${self:custom.tags}
@@ -47,18 +48,14 @@ custom:
     Environment: ${self:custom.stage}
 
 layers:
-  PythonLayer:
-    name: ${self:provider.stage}-PythonLayer
+  PythonPackages:
+    name: ${self:service}-${self:provider.stage}-python-packages
+    path: layer
     compatibleRuntimes:
       - python3.11
-    package:
-      artifact: python/myLayer.zip
-    description: "Python Layer"
 
 
 plugins:
-  - serverless-offline
-  - serverless-step-functions
   - serverless-python-requirements  
 
 package:
@@ -71,7 +68,6 @@ functions:
   movementOrderRT: ${file(config/functions/realtime/movementOrderRT.yml):function}
   reprocess: ${file(config/functions/realtime/reprocess.yml):function}
   sendemail: ${file(config/functions/realtime/sendemail.yml):function}
-
 
   #dynamoStreamToSns
   movementOrderRTstreamstosns: ${file(config/functions/realtime/dynamotosns/movementOrderRTstreamstosns.yml):function}
