@@ -47,7 +47,7 @@ custom:
       name: ${self:service}-${self:provider.stage}-layerName
       description: Python requirements lambda layer
       compatibleRuntimes:
-        - python3.10
+        - python3.8
 
   tags:
     Application: LiVe Real Time Updates
