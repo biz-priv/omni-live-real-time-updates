@@ -42,12 +42,27 @@ provider:
 custom:
   region: ${opt:region, 'us-east-1'}
   stage: ${opt:stage, 'dev'}
-  pythonRequirements:
-    layer:
-      name: ${self:service}-${self:provider.stage}-layerName
-      description: Python requirements lambda layer
-      compatibleRuntimes:
-        - python3.8
+
+  serverless-layers:
+      functions:
+          - ordersRT
+          - movementRT
+          - stopRT
+          - movementOrderRT
+          - reprocess
+          - sendemail
+          - movementOrderRTstreamstosns
+          - movementRTstreamstosns
+          - ordersRTstreamstosns
+          - stopRTstreamstosns
+      dependenciesPath: ./requirements.txt
+
+  # pythonRequirements:
+  #   layer:
+  #     name: ${self:service}-${self:provider.stage}-layerName
+  #     description: Python requirements lambda layer
+  #     compatibleRuntimes:
+  #       - python3.8
 
   tags:
     Application: LiVe Real Time Updates
@@ -62,7 +77,8 @@ custom:
 #       - python3.8
 
 plugins:
-  - serverless-python-requirements
+  - serverless-layers
+  # - serverless-python-requirements
 
 package:
   individually: true
