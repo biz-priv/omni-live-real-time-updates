@@ -46,19 +46,19 @@ custom:
   region: ${opt:region, 'us-east-1'}
   stage: ${opt:stage, 'dev'}
 
-  serverless-layers:
-      functions:
-          - ordersRT
-          - movementRT
-          - stopRT
-          - movementOrderRT
-          - reprocess
-          - sendemail
-          - movementOrderRTstreamstosns
-          - movementRTstreamstosns
-          - ordersRTstreamstosns
-          - stopRTstreamstosns
-      dependenciesPath: ./requirements.txt
+  # serverless-layers:
+  #     functions:
+  #         - ordersRT
+  #         - movementRT
+  #         - stopRT
+  #         - movementOrderRT
+  #         - reprocess
+  #         - sendemail
+  #         - movementOrderRTstreamstosns
+  #         - movementRTstreamstosns
+  #         - ordersRTstreamstosns
+  #         - stopRTstreamstosns
+  #     dependenciesPath: ./requirements.txt
 
   # pythonRequirements:
   #   layer:
