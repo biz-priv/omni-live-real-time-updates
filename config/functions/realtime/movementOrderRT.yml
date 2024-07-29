@@ -4,8 +4,9 @@ function:
   description: LiVe Movement Order Table - ${self:provider.stage}
   tags:
     Name: omni-live-real-time-movement-order-${self:provider.stage}
-  # layers:
-  #   - { Ref: PythonRequirementsLambdaLayer }
+  layers:
+      - { Ref: PythonLayerLambdaLayer }
+    # - { Ref: PythonRequirementsLambdaLayer }
   timeout: 600
   package:
     patterns:

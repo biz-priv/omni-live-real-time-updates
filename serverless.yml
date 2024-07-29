@@ -73,11 +73,20 @@ custom:
     Environment: ${self:custom.stage}
 
 # layers:
-#   PythonPackages:
+#   PythonLayer:
 #     name: ${self:service}-${self:provider.stage}-python-packages
 #     path: layer
 #     compatibleRuntimes:
 #       - python3.8
+
+layers:
+  PythonLayer:
+    name: ${self:provider.stage}-PythonLayer
+    compatibleRuntimes:
+      - python3.11
+    package:
+      artifact: layer/python/layer.zip
+    description: "Python Layer"
 
 plugins:
   - serverless-layers
