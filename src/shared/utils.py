@@ -54,13 +54,15 @@ def write_to_dynamo(df, table_name, id_dict):
         
         for item in items:
             row_id = item['id']
-            row_transact_id = item['transact_id']
+            row_transact_id = int(item['transact_id'])
 
             if row_id in id_dict:
                 if row_transact_id > id_dict[row_id]:
                     dynamo_item = {k: _convert_value(v) for k, v in item.items()}
                     response = table.put_item(Item=dynamo_item)
                     print("Successfully inserted item:", dynamo_item)
+                else:
+                    print(f"{row_id} is already present with a higher transact_id, skipping this")
             else:
                 response = table.put_item(Item=dynamo_item)
                 print("Successfully inserted item:", dynamo_item)

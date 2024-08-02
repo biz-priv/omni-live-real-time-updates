@@ -19,7 +19,7 @@ def handler(event, context):
             s3Key = record['s3']['object']['key']
             bucket = os.environ['S3_BUCKET']
             df = getFileFromS3(bucket, s3Key)
-            df_sorted = df.sort_values(by=['id', 'transact_id'], ascending = [True, False])
+            df_sorted = df.sort_values(by=['id', 'transact_id'], ascending = [True, True])
             # df_unique = df_sorted.drop_duplicates(subset='id', keep='first')
             print(df_sorted[['id', 'transact_id']])
             # print(df_unique[['id', 'transact_id']])
