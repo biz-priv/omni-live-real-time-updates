@@ -4,8 +4,8 @@ function:
   description: LiVe Orders Table - ${self:provider.stage}
   tags:
     Name: omni-live-real-time-orders-${self:provider.stage}
-  # layers:
-  #   - arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python311:12
+  layers:
+    - arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python311:12
   timeout: 600
   package:
     patterns:
