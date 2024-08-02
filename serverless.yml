@@ -88,8 +88,8 @@ custom:
 #       artifact: layer/python/layer.zip
 #     description: "Python Layer"
 
-plugins:
-  - serverless-layers
+# plugins:
+  # - serverless-layers
   # - serverless-python-requirements
 
 package:
