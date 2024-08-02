@@ -1,17 +1,16 @@
 function:
-  handler: src/realtime/movementOrderRT.handler 
+  handler: src/realtime/movement-order-rt.handler 
   name: omni-live-real-time-movement-order-${self:provider.stage}
   description: LiVe Movement Order Table - ${self:provider.stage}
-  runtime: python3.11
   tags:
-    Name: omni-live-real-time-movement-order
+    Name: omni-live-real-time-movement-order-${self:provider.stage}
   layers:
-    - { Ref: PythonLayerLambdaLayer }
+    - arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python311:12
   timeout: 600
   package:
     patterns:
       - '!**/*'
-      - 'src/realtime/movementorderrt.py'
+      - 'src/realtime/movement-order-rt.py'
       - 'src/shared/**'
   events:
     - s3:

@@ -35,14 +35,11 @@ pipeline {
             }
         }
 
-
         stage('Deploy'){
             when {
                 anyOf {
                     branch 'master';
                     branch 'develop';
-                    branch 'feature/43559';
-                    branch 'feature/55578';
                 }
                 expression {
                     return true;

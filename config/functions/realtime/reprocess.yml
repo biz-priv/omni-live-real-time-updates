@@ -3,10 +3,10 @@ function:
   name: omni-live-real-time-reprocess-${self:provider.stage}
   description: LiVe reprocess - ${self:provider.stage}
   tags:
-    Name : omni-live-real-time-reprocess
+    Name : omni-live-real-time-reprocess-${self:provider.stage}
   runtime: python3.11
   layers:
-    - { Ref: PythonLayerLambdaLayer }
+    - arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python311:12
   timeout: 600
   package:
     patterns:
@@ -17,9 +17,10 @@ function:
     - stream:
         type: dynamodb
         arn: ${ssm:/omni-live-realtime/${self:provider.stage}/failed-records/ddb.streamArn}
-        batchSize: 10
-        startingPosition: LATEST
+        batchSize: 1
+        enabled: true
         filterPatterns:
           - { dynamodb: { NewImage: { Status: { S: ['INSERTED'] } } } }
+        maximumRetryAttempts: 1
 
 
