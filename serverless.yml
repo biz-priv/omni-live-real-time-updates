@@ -104,8 +104,8 @@ functions:
   sendemail: ${file(config/functions/realtime/sendemail.yml):function}
 
   #dynamoStreamToSns
-  movementOrderRTstreamstosns: ${file(config/functions/realtime/dynamotosns/movementOrderRTstreamstosns.yml):function}
-  movementRTstreamstosns: ${file(config/functions/realtime/dynamotosns/movementRTstreamstosns.yml):function}
-  ordersRTstreamstosns: ${file(config/functions/realtime/dynamotosns/ordersRTstreamstosns.yml):function}
-  stopRTstreamstosns: ${file(config/functions/realtime/dynamotosns/stopRTstreamstosns.yml):function}
+  # movementOrderRTstreamstosns: ${file(config/functions/realtime/dynamotosns/movementOrderRTstreamstosns.yml):function}
+  # movementRTstreamstosns: ${file(config/functions/realtime/dynamotosns/movementRTstreamstosns.yml):function}
+  # ordersRTstreamstosns: ${file(config/functions/realtime/dynamotosns/ordersRTstreamstosns.yml):function}
+  # stopRTstreamstosns: ${file(config/functions/realtime/dynamotosns/stopRTstreamstosns.yml):function}
 
