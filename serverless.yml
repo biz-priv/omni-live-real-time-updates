@@ -44,52 +44,11 @@ provider:
 custom:
     region: ${opt:region, 'us-east-1'}
     stage: ${opt:stage, 'dev'}
-
-    # serverless-layers:
-    #     functions:
-    #         - ordersRT
-    #         - movementRT
-    #         - stopRT
-    #         - movementOrderRT
-    #         - reprocess
-    #         - sendemail
-    #         - movementOrderRTstreamstosns
-    #         - movementRTstreamstosns
-    #         - ordersRTstreamstosns
-    #         - stopRTstreamstosns
-    #     dependenciesPath: ./requirements.txt
-
-    # pythonRequirements:
-    #   layer:
-    #     name: ${self:service}-${self:provider.stage}-layerName
-    #     description: Python requirements lambda layer
-    #     compatibleRuntimes:
-    #       - python3.8
-
     tags:
         Application: LiVe Real Time Updates
         CreateBy: BizCloudExperts
         Environment: ${self:custom.stage}
 
-# layers:
-#   PythonLayer:
-#     name: ${self:service}-${self:provider.stage}-python-packages
-#     path: layer
-#     compatibleRuntimes:
-#       - python3.8
-
-# layers:
-#   PythonLayer:
-#     name: ${self:provider.stage}-PythonLayer
-#     compatibleRuntimes:
-#       - python3.11
-#     package:
-#       artifact: layer/python/layer.zip
-#     description: "Python Layer"
-
-# plugins:
-# - serverless-layers
-# - serverless-python-requirements
 
 package:
     individually: true
