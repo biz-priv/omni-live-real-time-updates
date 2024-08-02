@@ -5,8 +5,8 @@ function:
   description: LiVe Send Report - ${self:provider.stage}
   tags:
     Name: omni-live-real-time-sendreport-${self:provider.stage}
-  # layers:
-  #   - { Ref: PythonRequirementsLambdaLayer }
+  layers:
+    - arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python311:12
   timeout: 600
   package:
     patterns:
