@@ -79,14 +79,14 @@ custom:
 #     compatibleRuntimes:
 #       - python3.8
 
-layers:
-  PythonLayer:
-    name: ${self:provider.stage}-PythonLayer
-    compatibleRuntimes:
-      - python3.11
-    package:
-      artifact: layer/python/layer.zip
-    description: "Python Layer"
+# layers:
+#   PythonLayer:
+#     name: ${self:provider.stage}-PythonLayer
+#     compatibleRuntimes:
+#       - python3.11
+#     package:
+#       artifact: layer/python/layer.zip
+#     description: "Python Layer"
 
 plugins:
   - serverless-layers
