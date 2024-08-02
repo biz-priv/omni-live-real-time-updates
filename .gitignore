@@ -2,3 +2,4 @@ python/layers/*
 dockerfile
 node_modules
 layer/python/layer/*
+.serverless
