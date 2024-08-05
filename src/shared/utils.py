@@ -123,20 +123,18 @@ def write_sns_to_dynamodb(event, topic_arn, table_name, msg_att_name=None):
 
 def sns_publish(element, topic_arn, table_name, message_attributes):
     try:
-        dynamo_item = element.get('dynamodb', {}).get('NewImage', {})
-        if dynamo_item:
-            dynamo_item = json.loads(json.dumps(dynamo_item, default=str))
-            dynamo_item['tableName'] = table_name
-            print("Dynamo Item to Publish:", dynamo_item)
-            print()
-            sns_client.publish(
-                TopicArn=topic_arn,
-                Message=json.dumps(dynamo_item),
-                MessageAttributes=message_attributes
-            )
-            print("SNS Publish successful")
-        else:
-            print("No DynamoDB item found.")
+        dynamo_item = json.loads(json.dumps(element, default=str))
+        dynamo_item['tableName'] = table_name
+        print("Dynamo Item to Publish:", dynamo_item)
+        print()
+        sns_client.publish(
+            TopicArn=topic_arn,
+            Message=json.dumps(dynamo_item),
+            MessageAttributes=message_attributes
+        )
+        print("SNS Publish successful")
+        # else:
+        #     print("No DynamoDB item found.")
     except Exception as e:
         print("Error in sns_publish:", e)
         raise Exception("Error publishing to SNS: ") from e
