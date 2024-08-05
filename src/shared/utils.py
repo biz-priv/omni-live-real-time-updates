@@ -7,6 +7,7 @@ import datetime
 import pytz
 import uuid
 dynamodb = boto3.resource('dynamodb')
+sns_client = boto3.client('sns')
 
 
 def getFileFromS3(bucketName, s3key):
@@ -71,7 +72,6 @@ def failed_list(item,table_name,e):
 # In utils.py
 
 def write_sns_to_dynamodb(event, topic_arn, table_name, msg_att_name=None):
-    sns_client = boto3.client('sns')
     try:
         # Log the records from the event
         records = event.get('Records', None)
@@ -109,7 +109,9 @@ def write_sns_to_dynamodb(event, topic_arn, table_name, msg_att_name=None):
                     else:
                         print(f"{msg_att_name} not found in NewImage")
                 print("message_attributes", message_attributes)
-                sns_publish(sns_client, element, topic_arn, table_name, message_attributes)
+                if message_attributes is None:
+                    message_attributes = {}
+                sns_publish(element, topic_arn, table_name, message_attributes)
             except Exception as error:
                 print("Error processing element:", error)
         return "Success"
@@ -119,14 +121,14 @@ def write_sns_to_dynamodb(event, topic_arn, table_name, msg_att_name=None):
 
 
 
-def sns_publish(sns_client, element, topic_arn, table_name, message_attributes):
+def sns_publish(element, topic_arn, table_name, message_attributes):
     try:
-        print("SNS Publish")
         dynamo_item = element.get('dynamodb', {}).get('NewImage', {})
         if dynamo_item:
             dynamo_item = json.loads(json.dumps(dynamo_item, default=str))
             dynamo_item['tableName'] = table_name
             print("Dynamo Item to Publish:", dynamo_item)
+            print()
             sns_client.publish(
                 TopicArn=topic_arn,
                 Message=json.dumps(dynamo_item),
