@@ -83,6 +83,7 @@ def write_sns_to_dynamodb(event, topic_arn, table_name, msg_att_name=None):
         for element in records:
             print("Processing element:", element)
             try:
+                message_attributes = None
                 if msg_att_name:
                     new_image = element.get('dynamodb', {}).get('NewImage', {})
                     print("New Image:", new_image)
@@ -103,11 +104,12 @@ def write_sns_to_dynamodb(event, topic_arn, table_name, msg_att_name=None):
                                 },
                             }
                             print("messageAttributes:", message_attributes)
-                            sns_publish(sns_client, element, topic_arn, table_name, message_attributes)
                         else:
                             print("msg_att_value is empty or None")
                     else:
                         print(f"{msg_att_name} not found in NewImage")
+                print("message_attributes", message_attributes)
+                sns_publish(sns_client, element, topic_arn, table_name, message_attributes)
             except Exception as error:
                 print("Error processing element:", error)
         return "Success"
