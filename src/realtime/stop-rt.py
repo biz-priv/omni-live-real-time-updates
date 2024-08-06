@@ -20,12 +20,9 @@ def handler(event, context):
             bucket = os.environ['S3_BUCKET']
             df = getFileFromS3(bucket, s3Key)
             df_sorted = df.sort_values(by=['id', 'transact_id'], ascending = [True, True])
-            # df_unique = df_sorted.drop_duplicates(subset='id', keep='first')
             print(df_sorted[['id', 'transact_id']])
-            # print(df_unique[['id', 'transact_id']])
             unique_ids = get_transact_ids(df_sorted, os.environ['LIVE_STOPS_DB'])
             write_to_dynamo(df_sorted, os.environ['LIVE_STOPS_DB'], unique_ids)
-            # write_df_to_dynamodb(df_unique, os.environ['LIVE_STOPS_DB'])
 
         print("Completed")
 
