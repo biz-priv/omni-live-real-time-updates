@@ -44,7 +44,7 @@ def get_transact_ids(df, table_name):
 
         except Exception as e: 
             print(f"Error processing {id}: {e}")
-            raise Exception("Error processing row {index}:") from e
+            raise Exception("Error processing row {id}:") from e
     
     return id_dict
 
