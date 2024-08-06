@@ -8,6 +8,7 @@ import pytz
 import uuid
 from boto3.dynamodb.conditions import Key
 dynamodb = boto3.resource('dynamodb')
+sns_client = boto3.client('sns')
 
 def query_dynamo_and_get_transact_id(table_name, key, value):
     # Select the table
@@ -136,7 +137,6 @@ def failed_list(item,table_name,e):
 # In utils.py
 
 def write_sns_to_dynamodb(event, topic_arn, table_name, msg_att_name=None):
-    sns_client = boto3.client('sns')
     try:
         # Log the records from the event
         records = event.get('Records', None)
@@ -148,6 +148,7 @@ def write_sns_to_dynamodb(event, topic_arn, table_name, msg_att_name=None):
         for element in records:
             print("Processing element:", element)
             try:
+                message_attributes = None
                 if msg_att_name:
                     new_image = element.get('dynamodb', {}).get('NewImage', {})
                     print("New Image:", new_image)
@@ -168,11 +169,14 @@ def write_sns_to_dynamodb(event, topic_arn, table_name, msg_att_name=None):
                                 },
                             }
                             print("messageAttributes:", message_attributes)
-                            sns_publish(sns_client, element, topic_arn, table_name, message_attributes)
                         else:
                             print("msg_att_value is empty or None")
                     else:
                         print(f"{msg_att_name} not found in NewImage")
+                print("message_attributes", message_attributes)
+                if message_attributes is None:
+                    message_attributes = {}
+                sns_publish(element, topic_arn, table_name, message_attributes)
             except Exception as error:
                 print("Error processing element:", error)
         return "Success"
@@ -182,22 +186,20 @@ def write_sns_to_dynamodb(event, topic_arn, table_name, msg_att_name=None):
 
 
 
-def sns_publish(sns_client, element, topic_arn, table_name, message_attributes):
+def sns_publish(element, topic_arn, table_name, message_attributes):
     try:
-        print("SNS Publish")
-        dynamo_item = element.get('dynamodb', {}).get('NewImage', {})
-        if dynamo_item:
-            dynamo_item = json.loads(json.dumps(dynamo_item, default=str))
-            dynamo_item['tableName'] = table_name
-            print("Dynamo Item to Publish:", dynamo_item)
-            sns_client.publish(
-                TopicArn=topic_arn,
-                Message=json.dumps(dynamo_item),
-                MessageAttributes=message_attributes
-            )
-            print("SNS Publish successful")
-        else:
-            print("No DynamoDB item found.")
+        dynamo_item = json.loads(json.dumps(element, default=str))
+        dynamo_item['tableName'] = table_name
+        print("Dynamo Item to Publish:", dynamo_item)
+        print()
+        sns_client.publish(
+            TopicArn=topic_arn,
+            Message=json.dumps(dynamo_item),
+            MessageAttributes=message_attributes
+        )
+        print("SNS Publish successful")
+        # else:
+        #     print("No DynamoDB item found.")
     except Exception as e:
         print("Error in sns_publish:", e)
         raise Exception("Error publishing to SNS: ") from e

@@ -18,4 +18,3 @@ function:
   environment:
     SNS_TOPIC_ARN: ${ssm:/omni-live-rt-replication/${self:provider.stage}/stop-rt-ddb-to-sns/arn}
     DYNAMO_DB_TABLE: ${ssm:/omni-pb-rt/${self:provider.stage}/stop/db}
-
