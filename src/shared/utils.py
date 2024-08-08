@@ -62,7 +62,7 @@ def write_to_dynamo(df, table_name, id_dict):
             row_transact_id = int(item['transact_id'])
 
             # timestamp
-            item['inserted_timestamp'] = datetime.now(cst).strftime('%Y-%m-%d %H:%M:%S')
+            item['inserted_timestamp'] = datetime.now(cst).isoformat()
 
             if row_id in id_dict:
                 if row_transact_id > id_dict[row_id]:
