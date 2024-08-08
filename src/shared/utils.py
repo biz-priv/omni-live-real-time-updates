@@ -6,6 +6,7 @@ import os
 import datetime
 import pytz
 import uuid
+from datetime import datetime
 from boto3.dynamodb.conditions import Key
 dynamodb = boto3.resource('dynamodb')
 sns_client = boto3.client('sns')
@@ -53,9 +54,15 @@ def write_to_dynamo(df, table_name, id_dict):
         table = boto3.resource('dynamodb', region_name=os.environ['REGION']).Table(table_name)
         items = df.apply(lambda x: json.loads(x.to_json()), axis=1)
         
+        # get cst timezone
+        cst = pytz.timezone('America/Chicago')
+
         for item in items:
             row_id = item['id']
             row_transact_id = int(item['transact_id'])
+
+            # timestamp
+            item['timestamp'] = datetime.now(cst).strftime('%Y-%m-%d %H:%M:%S')
 
             if row_id in id_dict:
                 if row_transact_id > id_dict[row_id]:
