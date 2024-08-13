@@ -1,0 +1,24 @@
+---
+function:
+  name: omni-live-real-time-sendreport-${self:provider.stage}
+  handler: src/realtime/sendemail.handler
+  description: LiVe Send Report - ${self:provider.stage}
+  tags:
+    Name: omni-live-real-time-sendreport-${self:provider.stage}
+  layers:
+    - arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python311:12
+  timeout: 600
+  package:
+    patterns:
+      - '!**/*'
+      - 'src/realtime/sendemail.py'
+      - 'src/shared/**'
+  environment:
+    TO_EMAIL: ${ssm:/omni-realtime/${self:provider.stage}/omni-dev/email}
+    FROM_EMAIL: ${ssm:/omni-realtime/${self:provider.stage}/omni-no-reply/email}      
+
+  events:
+    - schedule: cron(0 */2 * * ? *)
+
+
+

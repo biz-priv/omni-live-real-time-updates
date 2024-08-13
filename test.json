@@ -1,0 +1,88 @@
+{
+    "Records": [
+      {
+        "eventID": "394dfdd2601e7c11306286abca411127",
+        "eventName": "MODIFY",
+        "eventVersion": "1.1",
+        "eventSource": "aws:dynamodb",
+        "awsRegion": "us-east-1",
+        "dynamodb": {
+          "ApproximateCreationDateTime": 1720207256.0,
+          "Keys": {
+            "id": {
+              "S": "zz1i1v67cba0b38AppDB02"
+            }
+          },
+          "NewImage": {
+            "transact_id": {
+              "S": "20240704153622150000000000000013593"
+            },
+            "Op": {
+              "S": "I"
+            },
+            "sequence": {
+              "S": "1"
+            },
+            "company_id": {
+              "S": "TMS"
+            },
+            "movement_id": {
+              "S": "137087"
+            },
+            "on_at_move_origin": {
+              "S": "n"
+            },
+            "planned_manifest_id": {
+              "NULL": true
+            },
+            "id": {
+              "S": "zz1i1v67cba0b38AppDB02"
+            },
+            "on_at_move_dest": {
+              "S": "N"
+            },
+            "order_id": {
+              "S": "0194369"
+            }
+          },
+          "OldImage": {
+            "transact_id": {
+              "S": "20240704153622150000000000000013593"
+            },
+            "Op": {
+              "S": "I"
+            },
+            "sequence": {
+              "S": "1"
+            },
+            "company_id": {
+              "S": "TMS"
+            },
+            "movement_id": {
+              "S": "137087"
+            },
+            "on_at_move_origin": {
+              "S": "N"
+            },
+            "planned_manifest_id": {
+              "NULL": true
+            },
+            "id": {
+              "S": "zz1i1v67cba0b38AppDB02"
+            },
+            "on_at_move_dest": {
+              "S": "N"
+            },
+            "order_id": {
+              "S": "0194369"
+            }
+          },
+          "SequenceNumber": "273492800000000054027325374",
+          "SizeBytes": 386,
+          "StreamViewType": "NEW_AND_OLD_IMAGES"
+        },
+        "eventSourceARN": "arn:aws:dynamodb:us-east-1:332281781429:table/omni-pb-rt-movement-order-dev/stream/2024-05-09T20:02:58.582"
+      }
+    ]
+  }
+  

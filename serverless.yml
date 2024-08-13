@@ -1,0 +1,68 @@
+service: omni-live-real-time-updates
+
+provider:
+    name: aws
+    region: ${opt:region, 'us-east-1'}
+    stage: ${opt:stage, 'dev'}
+    runtime: python3.11
+    versionFunctions: false
+    tags: ${self:custom.tags}
+    stackTags: ${self:custom.tags}
+    role: ${ssm:/omni-dw/${self:provider.stage}/lambda/role}
+    deploymentBucket:
+        name: ${ssm:/omni-dw/${self:provider.stage}/sls/deployment/bucket}
+        serverSideEncryption: AES256
+    vpc:
+        securityGroupIds:
+            - ${ssm:/omni-dw/${self:provider.stage}/lambda/sgId}
+        subnetIds:
+            - ${ssm:/omni-dw/${self:provider.stage}/lambda/subnetA}
+    iamRoleStatements:
+        - Effect: "Allow"
+          Action:
+              - "dynamodb:GetRecords"
+              - "dynamodb:GetShardIterator"
+              - "dynamodb:DescribeStream"
+              - "dynamodb:ListStreams"
+              - "dynamodb:DescribeTable"
+              - "dynamodb:Query"
+              - "dynamodb:GetItem"
+              - "dynamodb:PutItem"
+              - "dynamodb:UpdateItem"
+              - "dynamodb:DeleteItem"
+          Resource:
+              - "*"
+        - Effect: "Allow"
+          Action:
+              - "SNS:Publish"
+          Resource: "*"
+    environment:
+        REGION: ${self:custom.region}
+        STAGE: ${self:custom.stage}
+        FAILED_RECORDS: ${ssm:/omni-live-realtime/${self:provider.stage}/failed-records/ddb.tableName}
+
+custom:
+    region: ${opt:region, 'us-east-1'}
+    stage: ${opt:stage, 'dev'}
+    tags:
+        Application: LiVe Real Time Updates
+        CreateBy: BizCloudExperts
+        Environment: ${self:custom.stage}
+
+
+package:
+    individually: true
+
+functions:
+    ordersRT: ${file(config/functions/realtime/ordersRT.yml):function}
+    movementRT: ${file(config/functions/realtime/movementRT.yml):function}
+    stopRT: ${file(config/functions/realtime/stopRT.yml):function}
+    movementOrderRT: ${file(config/functions/realtime/movementOrderRT.yml):function}
+    reprocess: ${file(config/functions/realtime/reprocess.yml):function}
+    sendemail: ${file(config/functions/realtime/sendemail.yml):function}
+
+    #dynamoStreamToSns
+    movementOrderRTstreamstosns: ${file(config/functions/realtime/dynamotosns/movementOrderRTstreamstosns.yml):function}
+    movementRTstreamstosns: ${file(config/functions/realtime/dynamotosns/movementRTstreamstosns.yml):function}
+    ordersRTstreamstosns: ${file(config/functions/realtime/dynamotosns/ordersRTstreamstosns.yml):function}
+    stopRTstreamstosns: ${file(config/functions/realtime/dynamotosns/stopRTstreamstosns.yml):function}
