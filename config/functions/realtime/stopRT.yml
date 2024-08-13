@@ -14,12 +14,12 @@ function:
       - 'src/shared/**'
   events:
     - s3:
-        bucket: dms-dw-etl-lvlp
+        bucket: ${ssm:/omni-realtime/${self:provider.stage}/lvlp/s3-bucket}
         event: s3:ObjectCreated:*
         rules:
-          - prefix: dev/dbo/stop/
+          - prefix: ${self:provider.stage}/dbo/stop/
         existing: true
   environment:
     LIVE_STOPS_DB: ${ssm:/omni-pb-rt/${self:provider.stage}/stop/db}
-    S3_BUCKET: 'dms-dw-etl-lvlp'
+    S3_BUCKET: ${ssm:/omni-realtime/${self:provider.stage}/lvlp/s3-bucket}
     REGION: ${self:provider.region}
