@@ -23,7 +23,6 @@ def handler(event, context):
             print(df_sorted[['id', 'transact_id']])
             unique_ids = get_transact_ids(df_sorted, os.environ['MOVEMENT_ORDERS_DB'])
             write_to_dynamo(df_sorted, os.environ['MOVEMENT_ORDERS_DB'], unique_ids)
-            # write_df_to_dynamodb(df_unique, os.environ['MOVEMENT_ORDERS_DB'])
 
         print("Completed")
 
