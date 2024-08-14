@@ -18,7 +18,7 @@ function:
     FROM_EMAIL: ${ssm:/omni-realtime/${self:provider.stage}/omni-no-reply/email}      
 
   events:
-    - schedule: cron(0 */2 * * ? *)
+    - schedule: rate(2 hours)
 
 
 
