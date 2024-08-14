@@ -17,8 +17,8 @@ function:
     TO_EMAIL: ${ssm:/omni-realtime/${self:provider.stage}/omni-dev/email}
     FROM_EMAIL: ${ssm:/omni-realtime/${self:provider.stage}/omni-no-reply/email}      
 
-  events:
-    - schedule: rate(2 hours)
+  # events:
+  #   - schedule: rate(2 hours)
 
 
 
