@@ -1,0 +1,21 @@
+---
+function:
+  name: omni-callin-rt-ddb-to-sns-${self:provider.stage}
+  handler: src/dynamoStreamToSns/callin-rt-streams-to-sns.handler
+  tags: 
+    Name : omni-callin-rt-ddb-to-sns-${self:provider.stage}
+  layers:
+    - arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python311:12
+  package:
+    patterns:
+      - "!**/*"
+      - "src/dynamoStreamToSns/callin-rt-streams-to-sns.py"
+      - "src/shared/**"
+  events:
+    - stream:
+        type: dynamodb  
+        arn : ${ssm:/omni-pb-rt/${self:provider.stage}/callin/ddb.streamArn}
+ 
+  environment:
+    SNS_TOPIC_ARN: ${ssm:/omni-live-rt-replication/${self:provider.stage}/callin-rt-ddb-to-sns/arn}
+    DYNAMO_DB_TABLE: ${ssm:/omni-pb-rt/${self:provider.stage}/callin/ddb.name}
