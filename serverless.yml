@@ -60,9 +60,11 @@ functions:
     movementOrderRT: ${file(config/functions/realtime/movementOrderRT.yml):function}
     reprocess: ${file(config/functions/realtime/reprocess.yml):function}
     sendemail: ${file(config/functions/realtime/sendemail.yml):function}
+    callinRT: ${file(config/functions/realtime/callinRT.yml):function}
 
     #dynamoStreamToSns
     movementOrderRTstreamstosns: ${file(config/functions/realtime/dynamotosns/movementOrderRTstreamstosns.yml):function}
     movementRTstreamstosns: ${file(config/functions/realtime/dynamotosns/movementRTstreamstosns.yml):function}
     ordersRTstreamstosns: ${file(config/functions/realtime/dynamotosns/ordersRTstreamstosns.yml):function}
     stopRTstreamstosns: ${file(config/functions/realtime/dynamotosns/stopRTstreamstosns.yml):function}
+    callinRTstreamstosns: ${file(config/functions/realtime/dynamotosns/callinRTstreamstosns.yml):function}

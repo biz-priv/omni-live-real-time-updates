@@ -1,0 +1,25 @@
+function:
+  handler: src/realtime/callin-rt.handler 
+  name: omni-live-real-time-callin-${self:provider.stage}
+  description: LiVe callin Table - ${self:provider.stage}
+  tags:
+    Name: omni-live-real-time-callin-${self:provider.stage}
+  layers:
+    - arn:aws:lambda:us-east-1:336392948345:layer:AWSSDKPandas-Python311:12
+  timeout: 600
+  package:
+    patterns:
+      - '!**/*'
+      - 'src/realtime/callin-rt.py'
+      - 'src/shared/**'
+  events:
+    - s3:
+        bucket: ${ssm:/omni-realtime/${self:provider.stage}/lvlp/s3-bucket}
+        event: s3:ObjectCreated:*
+        rules:
+          - prefix: ${self:provider.stage}/dbo/callin/
+        existing: true
+  environment:
+    LIVE_CALLIN_DB: ${ssm:/omni-pb-rt/${self:provider.stage}/callin/ddb.name}
+    S3_BUCKET: ${ssm:/omni-realtime/${self:provider.stage}/lvlp/s3-bucket}
+    REGION: ${self:provider.region}
