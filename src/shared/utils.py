@@ -22,9 +22,8 @@ def query_dynamo_and_get_transact_id(table_name, key, value):
         )
         
         if response['Items']:
-            # Since there is only one record, return the transact_id of the first item
-            transact_id = response['Items'][0]['transact_id']
-            return int(transact_id)
+            transact_id = response['Items'][0].get('transact_id', 0)  # Default to 0 if not found
+            return int(transact_id) if str(transact_id).isdigit() else 0
         else:
             print(f"No item found with id {value}")
             return 0
@@ -44,41 +43,56 @@ def get_transact_ids(df, table_name):
             id_dict[id] = transact_id
 
         except Exception as e: 
-            print(f"Error processing {id}: {e}")
-            raise Exception("Error processing row {id}:") from e
-    
+            print(f"[ERROR] Error processing id {id}: {e}")
+            raise Exception(f"Error processing id {id}: {e}") from e
+
     return id_dict
+    
 
 def write_to_dynamo(df, table_name, id_dict):
     try:
         table = boto3.resource('dynamodb', region_name=os.environ['REGION']).Table(table_name)
-        items = df.apply(lambda x: json.loads(x.to_json()), axis=1)
         
         # get cst timezone
         cst = pytz.timezone('America/Chicago')
 
+        # Convert DataFrame rows to dictionary
+        items = df.apply(lambda x: json.loads(x.to_json()), axis=1)
+        
         for item in items:
             row_id = item['id']
-            row_transact_id = int(item['transact_id'])
-
-            # timestamp
+            
+            # Handle cases where transact_id might be empty or None
+            row_transact_id = item.get('transact_id')
+            
+            # Add timestamp
             item['inserted_timestamp'] = datetime.now(cst).isoformat()
 
+            # Prepare DynamoDB item
+            dynamo_item = {k: _convert_value(v) for k, v in item.items()}
+
+            # Logic for insertion based on transact_id
             if row_id in id_dict:
-                if row_transact_id > id_dict[row_id]:
-                    dynamo_item = {k: _convert_value(v) for k, v in item.items()}
+                # If transact_id is None or empty, skip comparison
+                if row_transact_id is None or row_transact_id == '':
                     response = table.put_item(Item=dynamo_item)
-                    print("Successfully inserted item:", dynamo_item)
+                    print(f"Inserted item with empty transact_id for id {row_id}")
+                # If transact_id has a value, compare with existing
+                elif row_transact_id and int(row_transact_id) > id_dict[row_id]:
+                    response = table.put_item(Item=dynamo_item)
+                    print(f"Successfully inserted item with higher transact_id for id {row_id}")
                 else:
-                    print(f"{row_id} is already present with a higher transact_id, skipping this")
+                    print(f"{row_id} is already present with a higher or equal transact_id, skipping this")
             else:
+                # If the id doesn't exist in the table, insert unconditionally
                 response = table.put_item(Item=dynamo_item)
-                print("Successfully inserted item:", dynamo_item)
+                print(f"Successfully inserted new item for id {row_id}")
 
     except Exception as e:
-        print("write_df_to_dynamodb(): Error inserting item:", e)
-        failed_list(item,table_name)
+        print("write_to_dynamo(): Error inserting item:", e)
+        failed_list(item, table_name, e)
         raise Exception("Error inserting item: ") from e
+
     
     
 
@@ -128,7 +142,7 @@ def failed_list(item,table_name,e):
     try:
         table = dynamodb.Table(os.environ['FAILED_RECORDS'])
         item = {
-            'UUid': uuid.uuid4(),
+            'UUid': str(uuid.uuid4()),
             'Sourcetable': table_name,
             'FailedRecord': item,
             'Status': "INSERTED",
