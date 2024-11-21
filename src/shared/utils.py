@@ -12,7 +12,9 @@ dynamodb = boto3.resource('dynamodb')
 sns_client = boto3.client('sns')
 
 def query_dynamo_and_get_transact_id(table_name, key, value):
-    # Select the table
+    # Treat `id` as string only for the users table
+    if table_name == os.environ['LIVE_USERS_DB']:
+        value = str(value)
     table = dynamodb.Table(table_name)
     
     try:
@@ -22,8 +24,7 @@ def query_dynamo_and_get_transact_id(table_name, key, value):
         )
         
         if response['Items']:
-            # Since there is only one record, return the transact_id of the first item
-            transact_id = response['Items'][0]['transact_id']
+            transact_id = response['Items'][0].get('transact_id', 0)
             return int(transact_id)
         else:
             print(f"No item found with id {value}")
@@ -34,9 +35,13 @@ def query_dynamo_and_get_transact_id(table_name, key, value):
         raise Exception("Error querying DynamoDB:") from e
 
 def get_transact_ids(df, table_name):
-    
     id_dict = {}
-    unique_ids = df['id'].unique()
+
+    # Check if the table is the users table
+    if table_name == os.environ['LIVE_USERS_DB']:
+        unique_ids = df['id'].astype(str).unique()  # Treat `id` as string
+    else:
+        unique_ids = df['id'].unique()  # Treat `id` as it is (int)
 
     for id in unique_ids:
         try:
@@ -45,39 +50,46 @@ def get_transact_ids(df, table_name):
 
         except Exception as e: 
             print(f"Error processing {id}: {e}")
-            raise Exception("Error processing row {id}:") from e
+            raise Exception(f"Error processing row {id}:") from e
     
     return id_dict
+
 
 def write_to_dynamo(df, table_name, id_dict):
     try:
         table = boto3.resource('dynamodb', region_name=os.environ['REGION']).Table(table_name)
         items = df.apply(lambda x: json.loads(x.to_json()), axis=1)
         
-        # get cst timezone
+        # Get CST timezone
         cst = pytz.timezone('America/Chicago')
 
         for item in items:
-            row_id = item['id']
+            # Handle `id` type based on table
+            if table_name == os.environ['LIVE_USERS_DB']:
+                row_id = str(item['id'])  # Treat `id` as string
+            else:
+                row_id = item['id']  # Keep original data type
+
             row_transact_id = int(item['transact_id'])
 
-            # timestamp
+            # Add timestamp
             item['inserted_timestamp'] = datetime.now(cst).isoformat()
 
             if row_id in id_dict:
                 if row_transact_id > id_dict[row_id]:
                     dynamo_item = {k: _convert_value(v) for k, v in item.items()}
-                    response = table.put_item(Item=dynamo_item)
+                    table.put_item(Item=dynamo_item)
                     print("Successfully inserted item:", dynamo_item)
                 else:
                     print(f"{row_id} is already present with a higher transact_id, skipping this")
             else:
-                response = table.put_item(Item=dynamo_item)
+                dynamo_item = {k: _convert_value(v) for k, v in item.items()}
+                table.put_item(Item=dynamo_item)
                 print("Successfully inserted item:", dynamo_item)
 
     except Exception as e:
-        print("write_df_to_dynamodb(): Error inserting item:", e)
-        failed_list(item,table_name)
+        print("write_to_dynamo(): Error inserting item:", e)
+        failed_list(item, table_name, str(e))
         raise Exception("Error inserting item: ") from e
     
     
