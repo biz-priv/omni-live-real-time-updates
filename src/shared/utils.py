@@ -142,7 +142,7 @@ def failed_list(item,table_name,e):
     try:
         table = dynamodb.Table(os.environ['FAILED_RECORDS'])
         item = {
-            'UUid': uuid.uuid4(),
+            'UUid': str(uuid.uuid4()),
             'Sourcetable': table_name,
             'FailedRecord': item,
             'Status': "INSERTED",
