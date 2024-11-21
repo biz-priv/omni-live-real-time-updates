@@ -27,7 +27,7 @@ def handler(event, context):
         print("Completed")
 
     except Exception as e:
-        print("Error processing live stops table:", e)
-        raise Exception("Error processing live stops table: ") from e
+        print("Error processing live users table:", e)
+        raise Exception("Error processing live users table: ") from e
         
     
