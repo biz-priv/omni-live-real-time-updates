@@ -19,7 +19,9 @@ def handler(event, context):
             s3Key = record['s3']['object']['key']
             bucket = os.environ['S3_BUCKET']
             df = getFileFromS3(bucket, s3Key)
-            df_sorted = df.sort_values(by=['id', 'transact_id'], ascending = [True, True])
+            # Filter out rows with empty transact_id before sorting
+            df_filtered = df[df['transact_id'].notnull() & (df['transact_id'] != '')]
+            df_sorted = df_filtered.sort_values(by=['id', 'transact_id'], ascending=[True, True])
             print(df_sorted[['id', 'transact_id']])
             unique_ids = get_transact_ids(df_sorted, os.environ['LIVE_USERS_DB'])
             write_to_dynamo(df_sorted, os.environ['LIVE_USERS_DB'], unique_ids)

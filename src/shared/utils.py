@@ -22,9 +22,8 @@ def query_dynamo_and_get_transact_id(table_name, key, value):
         )
         
         if response['Items']:
-            # Since there is only one record, return the transact_id of the first item
-            transact_id = response['Items'][0]['transact_id']
-            return int(transact_id)
+            transact_id = response['Items'][0].get('transact_id', 0)  # Default to 0 if not found
+            return int(transact_id) if str(transact_id).isdigit() else 0
         else:
             print(f"No item found with id {value}")
             return 0
@@ -59,9 +58,14 @@ def write_to_dynamo(df, table_name, id_dict):
 
         for item in items:
             row_id = item['id']
-            row_transact_id = int(item['transact_id'])
+            row_transact_id = item.get('transact_id', 0)
 
-            # timestamp
+            if not str(row_transact_id).isdigit():
+                print(f"[WARNING] Skipping row with invalid transact_id: {item}")
+                continue
+
+            row_transact_id = int(row_transact_id)
+
             item['inserted_timestamp'] = datetime.now(cst).isoformat()
 
             if row_id in id_dict:
@@ -72,8 +76,9 @@ def write_to_dynamo(df, table_name, id_dict):
                 else:
                     print(f"[INFO] {row_id} already exists with a higher transact_id. Skipping.")
             else:
+                dynamo_item = {k: _convert_value(v) for k, v in item.items()}
                 response = table.put_item(Item=dynamo_item)
-                print("Successfully inserted item:", dynamo_item)
+                print("[INFO] Successfully inserted item:", dynamo_item)
 
     except Exception as e:
         print("[ERROR] write_to_dynamo(): Error inserting item:", e)
