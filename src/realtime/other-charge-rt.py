@@ -10,7 +10,6 @@ sys.path.insert(0, shared_dir)
 
 from utils import getFileFromS3, write_df_to_dynamodb, write_to_dynamo, get_transact_ids
 
-
 def handler(event, context):
     try:
         print(event)
