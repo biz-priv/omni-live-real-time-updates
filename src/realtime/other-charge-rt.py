@@ -26,5 +26,5 @@ def handler(event, context):
         print("Completed")
 
     except Exception as e:
-        print("Error processing other charge table:", e)
-        raise Exception("Error processing live callin table: ") from e
+        print("Error processing other charge-table:", e)
+        raise Exception("Error processing live other-charge table: ") from e
