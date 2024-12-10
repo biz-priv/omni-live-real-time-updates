@@ -60,7 +60,10 @@ def write_to_dynamo(df, table_name, id_dict):
         items = df.apply(lambda x: json.loads(x.to_json()), axis=1)
         
         for item in items:
-            row_id = item['id']
+            if table_name == os.environ['LIVE_OTHER_CHARGE_DB']:                
+                row_id = item['order_id']
+            else:
+                row_id = item['id']
             
             # Handle cases where transact_id might be empty or None
             row_transact_id = item.get('transact_id')
