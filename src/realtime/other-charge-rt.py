@@ -18,8 +18,8 @@ def handler(event, context):
             s3Key = record['s3']['object']['key']
             bucket = os.environ['S3_BUCKET']
             df = getFileFromS3(bucket, s3Key)
-            df_sorted = df.sort_values(by=['id', 'transact_id'], ascending = [True, True])
-            print(df_sorted[['id', 'transact_id']])
+            df_sorted = df.sort_values(by=['order_id', 'transact_id'], ascending = [True, True])
+            print(df_sorted[['order_id', 'transact_id']])
             unique_ids = get_transact_ids(df_sorted, os.environ['LIVE_OTHER_CHARGE_DB'])
             write_to_dynamo(df_sorted, os.environ['LIVE_OTHER_CHARGE_DB'], unique_ids)
 
