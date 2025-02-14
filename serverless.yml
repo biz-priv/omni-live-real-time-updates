@@ -61,6 +61,8 @@ functions:
     reprocess: ${file(config/functions/realtime/reprocess.yml):function}
     sendemail: ${file(config/functions/realtime/sendemail.yml):function}
     callinRT: ${file(config/functions/realtime/callinRT.yml):function}
+    usersRT: ${file(config/functions/realtime/usersRT.yml):function}
+    otherChargeRT: ${file(config/functions/realtime/otherChargeRT.yml):function}
 
     #dynamoStreamToSns
     movementOrderRTstreamstosns: ${file(config/functions/realtime/dynamotosns/movementOrderRTstreamstosns.yml):function}
